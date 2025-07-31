@@ -1,0 +1,624 @@
+:root{
+  --taskWrapper-Height: 50px
+}
+
+* {
+  user-select: none;
+}
+
+body{
+  padding: 0;
+  margin: 0;
+  background-color: #ffeaa7;
+}
+
+html, body {
+  overscroll-behavior: none;
+}
+
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(252, 252, 252);
+  background-color: #f1bf30;
+  width: 100%;
+  height: 90px;
+  margin-bottom: 100px;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3);
+}
+
+h1{
+  margin: 0;
+  font-weight: 500;
+  font-family: "Architects Daughter", cursive;
+}
+
+.container{
+  display: flex;
+  justify-self: center;
+  justify-content: space-between;
+  width: 75%;
+  align-items: flex-start;
+}
+
+.taskBox{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 45%;
+  min-height: 300px;
+  background-color: #faf7f7;
+  border-radius: 15px;
+  box-shadow: 5px 8px 10px 0 rgba(0, 0, 0, 0.3);
+  margin-bottom: 50px;
+}
+
+.boxHeading{
+  display: flex;
+  justify-self: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  width: 50%;
+  background-color: #fdcb6e;
+  border-radius: 15px;
+  margin: 0;
+  padding: 12px;
+  box-shadow: 2px 4px 5px 0 rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+  font-size: 22px;
+  font-family: "Architects Daughter", cursive;
+}
+
+.infoText{
+  color: gray;
+  font-size: 15px;
+}
+
+.taskBox .infoText{
+  display: flex;
+  justify-self: center;
+  margin: 0;
+  margin-top: -10px;
+}
+
+.createArea{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 60px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.createArea input{
+  width: 50%;
+  height: 35px;
+  line-height: 1.2;
+  font-size: 22px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  font-family: "Architects Daughter", cursive;
+  text-align: center;
+}
+
+.createArea > input{
+  border-bottom: dashed 3px #eaa629;
+}
+
+input:focus{
+  outline: none;
+}
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.bottomCreate{
+  width: 70%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.createArea button{
+  width: 25%;
+  background-color: white;
+  border-radius: 10px;
+  border: black 2px solid;
+  transition: all .1s;
+  font-family: "Architects Daughter", cursive;
+}
+
+.taskOptions{
+  height: 100%;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 10px;
+  border: black 2px solid;
+  transition: all .1s;
+  box-sizing: border-box;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.taskOptions p{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 65%;
+  width: 100%;
+  margin: 0;
+  font-family: "Architects Daughter", cursive;
+  background-color: #fffbee;
+  font-size: 20px;
+}
+
+.changeOptions{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35%;
+  width: 100%;
+  cursor: pointer;
+  background-color: #ffeaa7;
+  transition: all .1s;
+  box-sizing: border-box;
+}
+
+.changeOptions div{
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.changeOptions img{
+  height: 60%;
+}
+
+.changeOptions div:hover{
+  background-color: #f1bf30;
+}
+
+.addButton{
+  height: 100%;
+  width: 20%;
+  font-size: 18px;
+  font-family: "Architects Daughter", cursive;
+}
+
+.createArea .addButton:active{
+  transform: scale(1.05);
+}
+
+.modeButton{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.modeOption{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modeButton p{
+  margin: 0;
+}
+
+.modeButton .modeOption.activeMode{
+  background-color: #f1bf30;
+  color: rgb(0, 0, 0);
+}
+
+.taskContainer{
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 0;
+  padding: 0;
+  list-style-position: inside;
+  border-radius: 0 0 15px 15px;
+  flex: 1;
+  animation: fadeInDropdown 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInDropdown {
+  0%{
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  100% {
+      transform: translateY(0px);
+      opacity: 1;
+  }
+}
+
+.taskContainer ol{
+  width: 100%;
+  padding: 0;
+  counter-reset: my-counter;
+}
+
+.task{
+  position: relative;
+  font-family: "Architects Daughter", cursive;
+  width: 80%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  counter-increment: my-counter;
+}
+
+.task::before{
+  content: counter(my-counter) ". ";
+  font-size: 30px;
+  width: 40px;
+  font-weight: bold;
+}
+
+.task img{
+  position: relative;
+  top: 1px;
+}
+
+.taskWrapper{
+  position: relative;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s;
+}
+
+.taskWrapper:hover{
+  background-color: rgb(237, 237, 237);
+  cursor: pointer;
+}
+
+.task.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.task li{
+  font-size: 25px;
+  width: 35%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  list-style: none;
+  opacity: 0.9;
+  transition: all .1s;
+}
+
+.task li:hover{
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.taskModeContainer{
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between;
+  height: 100%;
+  width: 35%;
+}
+
+.taskTime{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.taskTime p{
+  margin: 0;
+  font-size: 22px;
+  width: 80%;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondsBar{
+  position: relative;
+  height: 2px;
+  width: 70%;
+  background-color: gray;
+  border-radius: 5px;
+}
+
+.secondsProgress{
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  background-color: #f1bf30;
+  transition: all 1s linear;
+}
+
+.startTimeBtn{
+  height: 70%;
+}
+
+.reps{
+  margin: 0;
+  font-size: 30px;
+}
+
+.editButton{
+  height: 15px;
+  width: 25px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  opacity: 0.6;
+  display: none;
+  position: absolute;
+  right: calc(5% - 25px / 2);
+}
+
+.taskWrapper:hover .editButton{
+  display: block;
+}
+
+.editButton:hover{
+  opacity: 1 !important;
+}
+
+.optionsContainer{
+  position: absolute;
+  height: 60px;
+  width: 140px;
+  right: calc(5% - 140px / 2);
+  top: -50px;
+  background-color: whitesmoke;
+  border-radius: 5px;
+  box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.optionsContainer > div{
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 12px;
+  transition: all .1s;
+}
+
+.optionsContainer > div:hover{
+  background-color: rgb(234, 234, 234);
+}
+
+.optionsContainer img{
+  height: 50%;
+}
+
+.progressPercentage{
+  height: 100%;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  font-size: 25px;
+}
+
+.doneHeading{
+  display: flex;
+  justify-self: center;
+  justify-content: center;
+  font-family: "Architects Daughter", cursive;
+  width: 40%;
+  background-color: #ffe28a;
+  border-radius: 15px;
+  padding: 8px;
+  box-shadow: 2px 4px 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.doneDisplay{
+  height: 100%;
+  font-size: 25px;
+  width: 40%;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+}
+
+.checkmark{
+  height: 100%;
+}
+
+.modalEdit{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.editContainer{
+  z-index: 100;
+  width: 25%;
+  min-height: 100px;
+  background-color: #f1eded;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
+} 
+
+.editHeading{
+  justify-self: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  margin: 0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background-color:#ffae44;
+  border-radius: 10px;
+  box-shadow: 4px 6px 5px 0px rgba(0, 0, 0, 0.3);
+  font-family: monospace;
+  font-weight: 550;
+}
+
+.editMain{
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  justify-content: space-around;
+  width: 70%;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.fadeModal{
+  position: relative;
+  max-height: 50vh;
+  margin-bottom: 20px;
+}
+
+.fadeModal::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(transparent, #f1eded);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.scrollModal{
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 10px;
+}
+
+.editMain input{
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.editDiv{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffdb70;
+  gap: 10px;
+  padding: 10px;
+  border: solid black 2px;
+  border-radius: 10px;
+  box-shadow: 4px 6px 5px 0px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.editDiv div{
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.editMain label{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 40px;
+  margin: 0;
+  font-family: "Architects Daughter", cursive;
+  background-color: #ffba3a;
+  border-radius: 15px;
+  box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.editTime div{
+  font-family: monospace;
+}
+
+.editMain input{
+  width: calc(100% - 10px);
+}
+
+.editTime div{
+  display: flex;
+  justify-content: space-between;
+}
+
+.editTime input{
+  width: 50%;
+}
+
+.editButtons{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.editButtons button{
+  border: none;
+  height: 30px;
+  width: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 4px 6px 5px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.saveButton{
+  background-color: #fdcb6e;
+  color: black;
+}
+
+.cancelButton {
+  background-color: #e0e0e0;
+  color: black;
+  border: 2px solid #bdbdbd;
+}
