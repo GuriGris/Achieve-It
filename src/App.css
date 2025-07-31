@@ -17,15 +17,16 @@ html, body {
 }
 
 .header{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgb(252, 252, 252);
-  background-color: #f1bf30;
-  width: 100%;
-  height: 90px;
-  margin-bottom: 100px;
-  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgb(252, 252, 252);
+    background-color: #f1bf30;
+    width: 100%;
+    height: 90px;
+    margin-bottom: 100px;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.3);
 }
 
 h1{

@@ -1,0 +1,112 @@
+.userAuthContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.googleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.googleButton img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    height: 50px;
+    width: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.profileContainer:hover {
+    background-color: #f0f0f0;
+}
+
+.profileImage {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.emptyProfile {
+    border: 1px solid black;
+    transform: translateY(-1px);
+}
+
+.logoutContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.logoutButton {
+    margin-top: 10px;
+    background-color: #ff4d4d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.profileSettings > * {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.adminPanelContainer {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.adminPanelContainer input[type="email"] {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.adminPanelContainer input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
