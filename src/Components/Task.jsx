@@ -8,8 +8,8 @@ export default function Task(props){
     const [options, setOptions] = useState(false)
     const [mouseOver, setMouseOver] = useState(false)
 
-    const { hours, minutes, seconds } = props.secondsToTime(props.currentTime);
-    const hasTime = props.currentTime;
+    const { hours, minutes, seconds } = props.secondsToTime(props.task.currentTime);
+    const hasTime = props.task.currentTime;
     const formattedTime = `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`
     const secondsProgress = seconds > 0 ? ((seconds)/ 60) * 100 : 100;
 
@@ -17,11 +17,11 @@ export default function Task(props){
     const formattedStartTime = `${startHours > 0 ? startHours + "h" : ("")}${startMinutes > 0 && startHours > 0 ? " " : ""}${startMinutes > 0 ? startMinutes + "min" : ("")}`;
 
     function removeRep(){
-        if (props.reps > 1){
-            props.updateTask(props.task.id, { reps: props.reps - 1 });
+        if (props.task.reps > 1){
+            props.updateTask(props.task.id, { reps: props.task.reps - 1 });
         } else {
             props.checkOff(props.task.id)
-            props.updateTask(props.task.id, { reps: props.startReps });
+            props.updateTask(props.task.id, { reps: props.task.startReps });
         }
     }
 
@@ -37,35 +37,35 @@ export default function Task(props){
 
         let interval = setInterval(() => {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const timeLeft = Math.max(0, props.currentTime - elapsed);
+            const timeLeft = Math.max(0, props.task.currentTime - elapsed);
             
             props.updateTask(props.task.id, { currentTime: timeLeft });
 
             if (timeLeft === 0) {
                 setRunningTime(false);
                 props.checkOff(props.task.id)
-                props.updateTask(props.task.id, { currentTime: props.startTime })
+                props.updateTask(props.task.id, { currentTime: props.task.startTime })
             }
         }, 1000);
 
         return () => clearInterval(interval);
     }, [runningTime, startTime])
 
-    const repsPercentage = Math.floor(((props.startReps - props.reps) / props.startReps) * 100) + "%"
-    const timePercentage = Math.floor(((props.startTime - props.currentTime) / props.startTime) * 100) + "%"
+    const repsPercentage = Math.floor(((props.task.startReps - props.task.reps) / props.task.startReps) * 100) + "%"
+    const timePercentage = Math.floor(((props.task.startTime - props.task.currentTime) / props.task.startTime) * 100) + "%"
 
     return(
         <div className="taskWrapper" onMouseOver={() => setMouseOver(true)} onMouseLeave={() => `${setMouseOver(false)} ${setOptions(false)}`}>
             <div className="task">
                 <li
                 onClick={() => props.checkOff(props.task.id)}
-                title={props.name}
+                title={props.task.name}
                 style={{
                     textDecoration: props.task.completed ? "line-through" : "none",
                     color: props.task.completed ? "gray" : "black"
                 }}
                 >
-                {props.name}
+                {props.task.name}
                 </li>
 
                 {props.task.completed ? (
@@ -74,16 +74,16 @@ export default function Task(props){
                             <p>
                                 {formattedStartTime}
                             </p>
-                        : props.startReps > 2 ?
+                        : props.task.startReps > 2 ?
                             <p>
-                                {props.startReps}x
+                                {props.task.startReps}x
                             </p>
                         :
                         null}
                     </div>
                     ) : (
                     <div className="taskModeContainer">
-                        {props.mode == "Time" && hasTime ? 
+                        {props.task.mode == "Time" && hasTime ? 
                             <>
                             <img 
                             src={`/Images/${runningTime ? "pause" : "play"}.svg`}
@@ -100,8 +100,8 @@ export default function Task(props){
                                 </div>
                             </div>
                             </>
-                        : props.startReps >= 2 ?
-                            <p className="reps" onClick={removeRep}>{props.reps > 0 ? props.reps + "x" : ""}</p>
+                        : props.task.startReps >= 2 ?
+                            <p className="reps" onClick={removeRep}>{props.task.reps > 0 ? props.task.reps + "x" : ""}</p>
                         :
                         null}
                     </div>
@@ -110,8 +110,8 @@ export default function Task(props){
                 {props.task.completed ? 
                 <img src="Images/done.svg" alt="Green checkmark" className="checkmark"/>
                 :
-                <div className="progressPercentage" style={{opacity: !hasTime && props.startReps < 2 ? "0" : "1"}}>
-                    {props.mode === "Time" ? timePercentage : repsPercentage}
+                <div className="progressPercentage" style={{opacity: !hasTime && props.task.startReps < 2 ? "0" : "1"}}>
+                    {props.task.mode === "Time" ? timePercentage : repsPercentage}
                 </div>
                 }
 

@@ -63,13 +63,7 @@ export default function TaskBox(props){
             task = {task}
             tasks={tasks}
             checkOff = {checkOff}
-            name = {task.name}
-            startTime = {task.startTime}
-            currentTime = {task.currentTime}
             secondsToTime = {secondsToTime}
-            startReps = {task.startReps}
-            reps = {task.reps}
-            mode = {task.mode}
             updateTask = {updateTask}
             deleteTask={deleteTask}
             updatePositions={updatePositions}
