@@ -87,7 +87,7 @@ h1{
 .createArea{
   margin-top: 20px;
   margin-bottom: 20px;
-  height: 60px;
+  height: 160px;
   width: 80%;
   display: flex;
   flex-direction: column;

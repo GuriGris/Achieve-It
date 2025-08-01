@@ -1,19 +1,45 @@
-import React, { useState, useEffect } from "react"
-import InfoText from "./InfoText"
-import CreateArea from "./CreateArea"
-import Task from "./Task"
-import EditWindow from "./EditWindow"
+import React, { useState, useEffect } from "react";
+import InfoText from "./InfoText";
+import CreateArea from "./CreateArea";
+import Task from "./Task";
+import EditWindow from "./EditWindow";
+import { auth, db, getFromDatabase, saveToDatabase } from "../utils/firebase.utils";
+import { onAuthStateChanged } from "firebase/auth";
+import { getUser, setAuthData, setData, useData, } from "../authStore";
+import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database";
 
 export default function TaskBox(props){
-    const [tasks, setTasks] = useState(() => {
-        const saved = localStorage.getItem(`tasks-${props.id}`);
-        return saved ? JSON.parse(saved) : [];
-    });
+
+    const tasks = useData();
+    const setTasks = setData;
     const [editingTask, setEditingTask] = useState(null)
 
     useEffect(() => {
-        localStorage.setItem(`tasks-${props.id}`, JSON.stringify(tasks));
+        saveToDatabase(props.id, JSON.stringify(tasks));
     }, [tasks]);
+
+    const fetchTasks = async (id) => {
+        const data = await getFromDatabase(id);
+
+        const safeData = Array.isArray(data) ? data : [];
+        console.log(safeData)
+        setTasks(safeData);
+    }
+
+    useEffect(() => {
+        fetchTasks(props.id);
+
+        const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+            if (authUser) {
+                console.log(authUser && "Logged in, fetching data from database");
+                setAuthData(authUser, await authUser.getIdToken());
+                fetchTasks(props.id);
+            } else {
+                console.log("User not logged in")
+            }
+        });
+        return () => unsubscribe();
+    }, [props.id]);
 
     function secondsToTime(totalSeconds) {
         const hours = Math.floor(totalSeconds / 3600);
@@ -48,12 +74,16 @@ export default function TaskBox(props){
         });
 
         setTasks([...tasks])
+        saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
     function deleteTask(taskId){
-        setTasks(prevTasks => prevTasks.filter(task => 
-            task.id !== taskId 
-        ));
+        const updatedTasks = (Array.isArray(tasks) ? tasks : []).filter(task =>
+            task.id !== taskId
+        );
+
+        setTasks(updatedTasks);
+        saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
     function createTask(task){
@@ -74,28 +104,33 @@ export default function TaskBox(props){
     }
 
     function updateTask(taskId, updatedFields) {
-        setTasks(prevTasks => prevTasks.map(task => 
-            task.id === taskId 
-                ? {...task, ...updatedFields}
-                : task
-        ));
+        const updatedTasks = (Array.isArray(tasks) ? tasks : []).map(task =>
+            task.id === taskId
+            ? { ...task, ...updatedFields }
+            : task
+        );
+
+        setTasks(updatedTasks);
+        saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
-    function checkOff(taskID){
-        setTasks(prevTasks => prevTasks.map(task => 
-            task.id === taskID ? 
-                {...task, completed: !task.completed}
-                : 
-                task
-        ));
+    function checkOff(taskId){
+        const updatedTasks = (Array.isArray(tasks) ? tasks : []).map(task =>
+        task.id === taskId
+            ? { ...task, completed: !task.completed }
+            : task
+        );
+
+        setTasks(updatedTasks);
+        saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
-    const todayTasks = tasks.filter(task => task.type === "today").sort((a, b) => a.position - b.position)
-    const generalTasks = tasks.filter(task => task.type === "general").sort((a, b) => a.position - b.position)
+    const todayTasks = tasks ? tasks.filter(task => task.type === "today").sort((a, b) => a.position - b.position) : []
+    const generalTasks = tasks ? tasks.filter(task => task.type === "general").sort((a, b) => a.position - b.position) : []
 
     const currentTasks = props.id === 1 ? generalTasks : todayTasks;
-    const incomplete = currentTasks.filter(task => !task.completed);
-    const completed = currentTasks.filter(task => task.completed);
+    const incomplete = currentTasks ? currentTasks.filter(task => !task.completed) : [];
+    const completed = currentTasks ? currentTasks.filter(task => task.completed) : [];
 
     return(
         <div className="taskBox">

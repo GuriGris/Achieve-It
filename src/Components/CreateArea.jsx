@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import TaskOptions from "./TaskOptions"
+import { setData, useData } from "../authStore"
 
 export default function CreateArea(props){
     const [name, setName] = useState("")
@@ -8,6 +9,9 @@ export default function CreateArea(props){
     const [seconds, setSeconds] = useState(0)
     const [mode, setMode] = useState("Time")
     const [reps, setReps] = useState(2)
+
+    const tasks = useData();
+    const setTasks = setData;
 
     const timeDisplay = `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
     const repsDisplay = (
@@ -32,7 +36,7 @@ export default function CreateArea(props){
             return
         }
 
-        const currentTasks = props.tasks.filter(task => 
+        const currentTasks = tasks.filter(task => 
             task.type === (props.id === 1 ? "general" : "today")
         );
 
@@ -50,7 +54,7 @@ export default function CreateArea(props){
             position: currentTasks.length + 1
         }
         if (name.trim()) {
-            props.setTasks([...props.tasks, newTask]);
+            setTasks([...tasks, newTask]);
         }
         setHours(0)
         setMinutes(0)
@@ -99,6 +103,7 @@ export default function CreateArea(props){
 
     return(
         <div className="createArea">
+            {/* <p>tasks: {tasks}</p> */}
             <input type="text" className="taskInput" onChange={(e) => setName(capitalize(e.target.value))} value={name}/>
             
             <div className="bottomCreate">

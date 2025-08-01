@@ -2,7 +2,10 @@ import {
     initializeApp,
 } from "firebase/app";
 import {
+    get,
     getDatabase,
+    ref,
+    set,
 } from "firebase/database"
 import {
     getAuth,
@@ -11,6 +14,7 @@ import {
     onAuthStateChanged
 } from "firebase/auth";
 import {
+    getUser,
     setAuthData,
 } from "./../authStore"
 
@@ -51,7 +55,7 @@ export const signInWithGooglePopup = async () => {
         setAuthData(user, await user.getIdToken());
         return user;
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Sign-in error:', error);
     }
 }
 
@@ -60,6 +64,40 @@ export const handleGoogleSignOut = async () => {
         await auth.signOut();
         setAuthData(null, null);
     } catch (error) {
-        console.error("Google sign-out error:", error);
+        console.error("Sign-out error:", error);
+    }
+}
+
+export const saveToDatabase = async (id, data) => {
+    if (!await getUser()) {
+        console.log("No user logged in, setting to localstorage");
+        localStorage.setItem(`tasks-${id}`, JSON.stringify(data));
+        return
+    }
+
+    try {
+        const user = await getUser();
+        const tasksRef = ref(db, `users/${user.uid}/tasks-${id}`);
+        set(tasksRef, data);
+    } catch (error) {
+        console.log("Error saving to db.\nError:", error);
+    }
+}
+
+export const getFromDatabase = async (id) => {
+    if (!await getUser()) {
+        console.log("No user logged in, getting from localStorage");
+        const saved = localStorage.getItem(`tasks-${id}`);
+        return saved ? JSON.parse(JSON.parse(saved)) : [];
+    }
+
+    try {
+        const user = await getUser();
+        const tasksRef = ref(db, `users/${user.uid}/tasks-${id}`);
+        const snapshotVal = (await get(tasksRef)).val();
+        const savedTasks = snapshotVal ? JSON.parse(snapshotVal) : [];
+        return savedTasks;
+    } catch (error) {
+        console.log("User isn't logged in.\nError:", error);
     }
 }
