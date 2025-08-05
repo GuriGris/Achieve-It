@@ -85,9 +85,10 @@ h1{
 }
 
 .createArea{
+  position: relative;
   margin-top: 20px;
-  margin-bottom: 20px;
-  height: 160px;
+  margin-bottom: 50px;
+  height: 100px;
   width: 80%;
   display: flex;
   flex-direction: column;
@@ -95,6 +96,18 @@ h1{
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.createArea::after{
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  width: 100%;
+  background-color: rgb(215, 215, 215);
+  height: 2px;
+  border-radius: 1px;
+  box-shadow: 1px 2px 8px 0px rgb(216, 216, 216);
+  opacity: 0.8;
 }
 
 .createArea input{
@@ -233,7 +246,6 @@ input::-webkit-inner-spin-button {
 
 .taskContainer{
   width: 100%;
-  margin-top: 30px;
   margin-bottom: 0;
   padding: 0;
   list-style-position: inside;
@@ -242,21 +254,11 @@ input::-webkit-inner-spin-button {
   animation: fadeInDropdown 0.5s ease-in-out forwards;
 }
 
-@keyframes fadeInDropdown {
-  0%{
-      opacity: 0;
-      transform: translateY(-10px);
-  }
-  100% {
-      transform: translateY(0px);
-      opacity: 1;
-  }
-}
-
 .taskContainer ol{
   width: 100%;
   padding: 0;
   counter-reset: my-counter;
+  margin-top: 20px;
 }
 
 .task{
@@ -264,19 +266,45 @@ input::-webkit-inner-spin-button {
   font-family: "Architects Daughter", cursive;
   width: 80%;
   height: 30px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 15% 35% 30% 15%;
+  grid-template-rows: 30px;
   align-items: center;
-  justify-self: center;
   justify-content: space-between;
   box-sizing: border-box;
-  counter-increment: my-counter;
 }
 
-.task::before{
-  content: counter(my-counter) ". ";
+.task :nth-child(1), .task :nth-child(2) {
+  justify-self: start;
+}
+
+.task :nth-child(4), .task :nth-child(3) {
+  justify-self: end;
+}
+
+.deleteContainer{
+  width: 10%;
+  height: 100%;
+}
+
+.deleteTask{
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  animation: fadeInDropdown 0.3s forwards;
+}
+
+.taskPosition{
+  height: 30px;
+  display: flex;
+  align-items: center;
+  font-family: "Architects Daughter", cursive;
   font-size: 30px;
-  width: 40px;
-  font-weight: bold;
+  width: 100%;
+  margin: 0;
+  animation: fadeInDropdown 0.3s forwards;
 }
 
 .task img{
@@ -303,9 +331,9 @@ input::-webkit-inner-spin-button {
   color: gray;
 }
 
-.task li{
+.taskName{
+  height: 100%;
   font-size: 25px;
-  width: 35%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -314,7 +342,7 @@ input::-webkit-inner-spin-button {
   transition: all .1s;
 }
 
-.task li:hover{
+.taskName:hover{
   font-weight: 700;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
@@ -324,7 +352,7 @@ input::-webkit-inner-spin-button {
   align-items: center !important;
   justify-content: space-between;
   height: 100%;
-  width: 35%;
+  width: 90%;
 }
 
 .taskTime{
@@ -372,68 +400,27 @@ input::-webkit-inner-spin-button {
 }
 
 .editButton{
-  height: 15px;
-  width: 25px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  height: 25px;
+  width: 30px;
   border-radius: 10px;
-  opacity: 0.6;
-  display: none;
-  position: absolute;
-  right: calc(5% - 25px / 2);
-}
-
-.taskWrapper:hover .editButton{
-  display: block;
+  opacity: 0.7;
+  animation: fadeInDropdown 0.3s forwards;
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
 
 .editButton:hover{
   opacity: 1 !important;
 }
 
-.optionsContainer{
-  position: absolute;
-  height: 60px;
-  width: 140px;
-  right: calc(5% - 140px / 2);
-  top: -50px;
-  background-color: whitesmoke;
-  border-radius: 5px;
-  box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.optionsContainer > div{
-  width: 100%;
-  height: 50%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 10px;
-  padding-right: 10px;
-  box-sizing: border-box;
-  font-family: monospace;
-  font-size: 12px;
-  transition: all .1s;
-}
-
-.optionsContainer > div:hover{
-  background-color: rgb(234, 234, 234);
-}
-
-.optionsContainer img{
-  height: 50%;
-}
-
 .progressPercentage{
   height: 100%;
-  width: 30px;
   display: flex;
   align-items: center;
   justify-content: end;
   font-size: 25px;
+  animation: fadeInDropdown 0.3s forwards;
 }
 
 .doneHeading{
@@ -454,11 +441,26 @@ input::-webkit-inner-spin-button {
   width: 40%;
   display: flex;
   align-items: center;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .checkmark{
   height: 100%;
+}
+
+
+.editSwitch{
+  display: inline;
+  padding: 5px;
+  margin: 0;
+  margin-left: 10%;
+  border: solid black 2px;
+  border-radius: 5px;
+  font-family: "Architects Daughter", cursive;
+}
+
+.editSwitch.activeEdit{
+  background-color:#ffd04f;
 }
 
 .modalEdit{
@@ -526,6 +528,7 @@ input::-webkit-inner-spin-button {
   background: linear-gradient(transparent, #f1eded);
   pointer-events: none;
   z-index: 10;
+  opacity: 0.8;
 }
 
 .scrollModal{
@@ -622,4 +625,17 @@ input::-webkit-inner-spin-button {
   background-color: #e0e0e0;
   color: black;
   border: 2px solid #bdbdbd;
+}
+
+/* Animations */
+
+@keyframes fadeInDropdown {
+  0%{
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  100% {
+      transform: translateY(0px);
+      opacity: 1;
+  }
 }

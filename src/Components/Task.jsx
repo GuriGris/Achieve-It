@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 
-import Options from "./Options";
-
 export default function Task(props){
     const [runningTime, setRunningTime] = useState(false)
     const [startTime, setStartTime] = useState(Date.now())
-    const [options, setOptions] = useState(false)
-    const [mouseOver, setMouseOver] = useState(false)
 
     const { hours, minutes, seconds } = props.secondsToTime(props.task.currentTime);
     const hasTime = props.task.currentTime;
@@ -55,8 +51,21 @@ export default function Task(props){
     const timePercentage = Math.floor(((props.task.startTime - props.task.currentTime) / props.task.startTime) * 100) + "%"
 
     return(
-        <div className="taskWrapper" onMouseOver={() => setMouseOver(true)} onMouseLeave={() => `${setMouseOver(false)} ${setOptions(false)}`}>
+        <div className="taskWrapper">
             <div className="task">
+                {props.editingState ? 
+                    <div className="deleteContainer">
+                            <img 
+                            src="Images/deleteIcon.svg"
+                            alt="trashcan icon"
+                            onClick={() => props.deleteTask(props.task.id)}
+                            className="deleteTask"
+                            />
+                    </div>
+                :
+                    <p className="taskPosition">{props.task.position}.</p>
+                }
+                
                 <li
                 onClick={() => props.checkOff(props.task.id)}
                 title={props.task.name}
@@ -64,6 +73,7 @@ export default function Task(props){
                     textDecoration: props.task.completed ? "line-through" : "none",
                     color: props.task.completed ? "gray" : "black"
                 }}
+                className="taskName"
                 >
                 {props.task.name}
                 </li>
@@ -106,45 +116,21 @@ export default function Task(props){
                         null}
                     </div>
                     )}
-                
-                {props.task.completed ? 
+                {props.editingState ? (
+                    <img 
+                    src="Images/edit.svg"
+                    alt="Edit icon" 
+                    className="editButton"
+                    onClick={() => props.setEditingTask(props.task)}
+                    />
+                ) : ( props.task.completed ? 
                 <img src="Images/done.svg" alt="Green checkmark" className="checkmark"/>
                 :
-                <div className="progressPercentage" style={{opacity: !hasTime && props.task.startReps < 2 ? "0" : "1"}}>
+                <div className="progressPercentage" style={{display: !hasTime && props.task.startReps < 2 ? "none" : "flex"}}>
                     {props.task.mode === "Time" ? timePercentage : repsPercentage}
                 </div>
-                }
-
+                )}
             </div>
-
-            {options && mouseOver ?
-                <>
-                <img 
-                src="Images/options.svg"
-                alt="Edit icon" 
-                className="editButton"
-                onClick={() => setOptions(!options)}
-                style={{opacity: "1"}}
-                />
-                <Options
-                    task={props.task}
-                    taskId={props.task.id}
-                    deleteTask={props.deleteTask}
-                    position={props.task.position}
-                    updatePositions={props.updatePositions}
-                    length={props.length}
-                    openEdit={props.openEdit}
-                />
-                </>
-            :
-                <img 
-                src="Images/options.svg"
-                alt="Edit icon" 
-                className="editButton"
-                onClick={() => setOptions(!options)}
-                />
-            }
-            
         </div>
     )
 }

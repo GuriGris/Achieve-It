@@ -12,6 +12,7 @@ export default function TaskBox(props){
 
     const tasks = useData();
     const setTasks = setData;
+    const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
 
     useEffect(() => {
@@ -52,14 +53,6 @@ export default function TaskBox(props){
         return hours * 3600 + minutes * 60 + seconds;
     }
 
-    function openEdit(task){
-        setEditingTask(task)
-    }
-
-    function closeEdit(){
-        setEditingTask(null)
-    }
-
     function updatePositions(taskId, from, to){
         const taskType = tasks.find(task => task.id === taskId).type;
 
@@ -78,12 +71,24 @@ export default function TaskBox(props){
     }
 
     function deleteTask(taskId){
+        const deletedPosition = tasks.find(task => task.id === taskId).position
+
         const updatedTasks = (Array.isArray(tasks) ? tasks : []).filter(task =>
             task.id !== taskId
         );
 
+        updatedTasks.forEach(task => {
+            if(task.position > deletedPosition){
+                task.position -= 1
+            }
+        })
+
         setTasks(updatedTasks);
         saveToDatabase(props.id, JSON.stringify(tasks));
+    }
+
+    function closeEdit(){
+        setEditingTask(null)
     }
 
     function createTask(task){
@@ -98,7 +103,8 @@ export default function TaskBox(props){
             deleteTask={deleteTask}
             updatePositions={updatePositions}
             length={currentTasks.length}
-            openEdit={openEdit}
+            editingState={editingState}
+            setEditingTask={setEditingTask}
             />
         )
     }
@@ -132,6 +138,12 @@ export default function TaskBox(props){
     const incomplete = currentTasks ? currentTasks.filter(task => !task.completed) : [];
     const completed = currentTasks ? currentTasks.filter(task => task.completed) : [];
 
+    useEffect(() => {
+        if (currentTasks.length == 0){
+            setEditingState(false)
+        }
+    }, [currentTasks]);
+
     return(
         <div className="taskBox">
             <h2 className="boxHeading">{props.name}</h2>
@@ -143,6 +155,14 @@ export default function TaskBox(props){
             timeToSeconds={timeToSeconds}
             />
             <div className="taskContainer" key={incomplete}>
+                {currentTasks.length > 0 ?
+                    <h4 className={`${"editSwitch"} ${editingState ? "activeEdit" : null}`} onClick={() => setEditingState(!editingState)}>
+                        Edit: {editingState ? "on" : "off"}
+                    </h4> 
+                :
+                    null
+                }
+                
                 <ol className="Incompleted" key={incomplete.length}>
                     {
                         incomplete.map(createTask)
