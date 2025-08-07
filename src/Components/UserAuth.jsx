@@ -28,33 +28,27 @@ const LoginButton = () => {
 }
 
 function LoguotButton() {
-    return (
-        <div className={styles.logoutContainer}>
-            <button className={styles.logoutButton} onClick={handleGoogleSignOut}>Logg ut</button>
-        </div>
-    );
+    return <button className={styles.logoutButton} onClick={handleGoogleSignOut}>Logg ut</button>;
 }
 
 function Profile() {
     const [clickedProfile, setClickedProfile] = useState(false);
 
     return (
-        <div className={styles.logoutContainer}>
+        <div className={`${styles.rightAlign} ${clickedProfile && styles.profileActive}`}>
             <div className={styles.profileContainer} onClick={() => {setClickedProfile(!clickedProfile)}}>
                 <img src={getUser()?.photoURL} alt="User profile image" className={styles.profileImage} />
             </div>
-            {clickedProfile &&
-                <div className={styles.profileSettings}>
-                    <LoguotButton />
-                </div>
-            }
+            <div className={styles.profileSettings}>
+                <LoguotButton />
+            </div>
         </div>
     );
 }
 
 function EmptyProfile() {
     return (
-        <div className={styles.logoutContainer}>
+        <div className={styles.rightAlign}>
             <div className={styles.profileContainer}>
                 <img
                     src="/Images/profile.svg"

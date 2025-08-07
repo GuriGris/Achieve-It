@@ -72,8 +72,7 @@ export const handleGoogleSignOut = async () => {
 
 export const saveToDatabase = async (id, data) => {
     if (!await getUser()) {
-        console.log("No user logged in, setting to localstorage");
-        localStorage.setItem(`tasks`, JSON.stringify(data));
+        console.log("No user logged in.");
         return
     }
 
@@ -92,8 +91,7 @@ export const saveToDatabase = async (id, data) => {
 
 export const deleteFormDatabase = async (listId, taskId) => {
     if (!await getUser()) {
-        console.log("No user logged in, removing from localstorage");
-        localStorage.removeItem(taskId);
+        console.log("No user logged in.");
         return
     }
 
@@ -108,9 +106,8 @@ export const deleteFormDatabase = async (listId, taskId) => {
 
 export const getFromDatabase = async () => {
     if (!await getUser()) {
-        console.log("No user logged in, getting from localStorage");
-        const saved = localStorage.getItem(`tasks`);
-        return saved ? JSON.parse(saved) : [];
+        console.log("No user logged in.");
+        return [];
     }
 
     try {
