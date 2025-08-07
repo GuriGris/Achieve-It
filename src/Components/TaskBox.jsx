@@ -84,7 +84,6 @@ export default function TaskBox(props){
         })
 
         setTasks(updatedTasks);
-        saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
     function closeEdit(){
@@ -104,6 +103,7 @@ export default function TaskBox(props){
             updatePositions={updatePositions}
             length={currentTasks.length}
             editingState={editingState}
+            editingTask={editingTask}
             setEditingTask={setEditingTask}
             />
         )
@@ -116,7 +116,7 @@ export default function TaskBox(props){
             : task
         );
 
-        setTasks(updatedTasks);
+        setTasks(...tasks, updatedTasks);
         saveToDatabase(props.id, JSON.stringify(tasks));
     }
 
@@ -156,9 +156,9 @@ export default function TaskBox(props){
             />
             <div className="taskContainer" key={incomplete}>
                 {currentTasks.length > 0 ?
-                    <h4 className={`${"editSwitch"} ${editingState ? "activeEdit" : null}`} onClick={() => setEditingState(!editingState)}>
+                    <button className={`${"editSwitch"} ${editingState ? "activeEdit" : null}`} onClick={() => setEditingState(!editingState)}>
                         Edit: {editingState ? "on" : "off"}
-                    </h4> 
+                    </button> 
                 :
                     null
                 }

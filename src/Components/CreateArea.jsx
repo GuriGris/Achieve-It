@@ -42,7 +42,7 @@ export default function CreateArea(props){
 
         const startTime = props.timeToSeconds(hours, minutes, seconds)
         const newTask = {
-            id: crypto.randomUUID(),
+            id: Date.now() + Math.random(),
             name: name,
             completed: false,
             type: props.id === 1 ? "general" : "today",
@@ -111,7 +111,7 @@ export default function CreateArea(props){
                     <div 
                         className={`modeOption ${mode === "Time" ? "activeMode" : ""}`}
                         onClick={() => setMode("Time")}
-                        style={{borderBottom: "solid 2px black"}}
+                        style={{borderBottom: "solid var(--border-md) black"}}
                     >
                         <p>Time</p>
                     </div>
