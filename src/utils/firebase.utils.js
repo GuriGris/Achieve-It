@@ -119,3 +119,17 @@ export const getFromDatabase = async () => {
         console.warn("User isn't logged in.\nError:", error);
     }
 }
+
+export const getLastVisit = async () => {
+    const user = await getUser();
+    const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
+    const lastVisit = await get(lastVisitRef);
+    return lastVisit;
+}
+
+export const setLastVisit = async () => {
+    const Date = Math.floor(Date.now() / 1000 / 60 / 60 / 24)
+    const user = await getUser();
+    const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
+    set(lastVisitRef, Date)
+}

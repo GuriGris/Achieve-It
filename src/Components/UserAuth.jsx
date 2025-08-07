@@ -1,20 +1,9 @@
 import styles from './UserAuth.module.css';
-import {
-    getAuth,
-    onAuthStateChanged,
-} from "firebase/auth";
-import {
-    getUser,
-} from '../authStore';
-import {
-    useState,
-    useEffect,
-} from 'react';
-import {
-    auth,
-    signInWithGooglePopup,
-    handleGoogleSignOut
-} from '../utils/firebase.utils';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getUser } from '../authStore';
+import { useState, useEffect } from 'react';
+import { auth, signInWithGooglePopup, handleGoogleSignOut } from '../utils/firebase.utils';
+
 
 const LoginButton = () => {
     return (

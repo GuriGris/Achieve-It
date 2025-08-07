@@ -30,6 +30,7 @@ function App() {
                 infoText = "This is for tasks that you have to do today"
             />
         </div>
+        
     </>
   );
 }

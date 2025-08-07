@@ -13,7 +13,7 @@ export default function TaskBox(props){
     const tasks = useData();
     const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
-    
+
     const fetchTasks = async () => {
         const data = await getFromDatabase();
 
@@ -28,6 +28,26 @@ export default function TaskBox(props){
             setData(newData);
         }
     }
+
+    useEffect(() => {
+
+    }, [])
+
+    function isNewDay() {
+
+    }
+
+    const now = new Date()
+
+    useEffect(() => {
+
+    }, [], [now.getDate()])
+
+    useEffect(() => {
+        if (isNewDay()) {
+            alert("It's a new day!");
+        }
+    }, []);
 
     useEffect(() => {
         fetchTasks(props.id);
