@@ -819,7 +819,10 @@ body:has(.modalEdit) {
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) and (max-width: 767.98px) {
-  /* Small tablet styles here */
+  :root{
+    --editSwitch-height: 3rem;
+    --editSwitch-width: 6rem;
+  }
 }
 
 /* Medium devices (tablets, 768px and up) */
