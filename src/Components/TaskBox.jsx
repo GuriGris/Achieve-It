@@ -3,7 +3,7 @@ import InfoText from "./InfoText";
 import CreateArea from "./CreateArea";
 import Task from "./Task";
 import EditWindow from "./EditWindow";
-import { auth, db, getFromDatabase, saveToDatabase } from "../utils/firebase.utils";
+import { auth, db, getFromDatabase, saveToDatabase, deleteFormDatabase } from "../utils/firebase.utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { getUser, setAuthData, setData, useData, } from "../authStore";
 import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database";
@@ -15,16 +15,26 @@ export default function TaskBox(props){
     const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
 
+    const getTasks = () => tasks;
+    window.getTasks = getTasks;
+
     useEffect(() => {
-        saveToDatabase(props.id, JSON.stringify(tasks));
+        console.log("taskchange")
     }, [tasks]);
 
-    const fetchTasks = async (id) => {
-        const data = await getFromDatabase(id);
+    const fetchTasks = async () => {
+        const data = await getFromDatabase();
 
-        const safeData = Array.isArray(data) ? data : [];
-        console.log(safeData)
-        setTasks(safeData);
+        const newData = []
+        for (let key in data) {
+            for (let key_2 in data[key]) {
+                newData.push(data[key][key_2])
+            }
+        }
+
+        if (data !== -1) {
+            setTasks(newData);
+        }
     }
 
     useEffect(() => {
@@ -34,13 +44,53 @@ export default function TaskBox(props){
             if (authUser) {
                 console.log(authUser && "Logged in, fetching data from database");
                 setAuthData(authUser, await authUser.getIdToken());
-                fetchTasks(props.id);
+                fetchTasks();
             } else {
                 console.log("User not logged in")
             }
         });
         return () => unsubscribe();
     }, [props.id]);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userId = user.uid;
+                const userGeneralRef = ref(db, `users/${userId}/general`);
+                const userTodayRef = ref(db, `users/${userId}/general`);
+
+                const childChange = snapshot => {
+                    console.log(snapshot.val())
+                    fetchTasks()
+                }
+
+                onChildAdded(userGeneralRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+                onChildAdded(userTodayRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+
+                onChildChanged(userGeneralRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+                onChildChanged(userTodayRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+
+                onChildRemoved(userGeneralRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+                onChildRemoved(userTodayRef, (snapshot) => {
+                    childChange(snapshot)
+                });
+            }
+        });
+    }, []);
+
+    const findTaskWithId = taskId => {
+        return tasks.find(task => task.id === taskId) || [];
+    }
 
     function secondsToTime(totalSeconds) {
         const hours = Math.floor(totalSeconds / 3600);
@@ -54,7 +104,7 @@ export default function TaskBox(props){
     }
 
     function updatePositions(taskId, from, to){
-        const taskType = tasks.find(task => task.id === taskId).type;
+        const taskType = findTaskWithId(taskId).type;
 
         const listTasks = tasks.filter(task => task.type === taskType).sort((a, b) => a.position - b.position);
         
@@ -67,11 +117,11 @@ export default function TaskBox(props){
         });
 
         setTasks([...tasks])
-        saveToDatabase(props.id, JSON.stringify(tasks));
+        saveToDatabase(props.id, findTaskWithId(taskId));
     }
 
     function deleteTask(taskId){
-        const deletedPosition = tasks.find(task => task.id === taskId).position
+        const deletedPosition = findTaskWithId(taskId).position
 
         const updatedTasks = (Array.isArray(tasks) ? tasks : []).filter(task =>
             task.id !== taskId
@@ -84,7 +134,7 @@ export default function TaskBox(props){
         })
 
         setTasks(updatedTasks);
-        saveToDatabase(props.id, JSON.stringify(tasks));
+        deleteFormDatabase(props.id, taskId);
     }
 
     function closeEdit(){
@@ -117,7 +167,8 @@ export default function TaskBox(props){
         );
 
         setTasks(updatedTasks);
-        saveToDatabase(props.id, JSON.stringify(tasks));
+        console.log(tasks)
+        saveToDatabase(props.id, findTaskWithId(taskId));
     }
 
     function checkOff(taskId){
@@ -128,7 +179,7 @@ export default function TaskBox(props){
         );
 
         setTasks(updatedTasks);
-        saveToDatabase(props.id, JSON.stringify(tasks));
+        saveToDatabase(props.id, findTaskWithId(taskId));
     }
 
     const todayTasks = tasks ? tasks.filter(task => task.type === "today").sort((a, b) => a.position - b.position) : []
@@ -150,7 +201,6 @@ export default function TaskBox(props){
             <InfoText text={props.infoText}/>
             <CreateArea 
             id={props.id}
-            setTasks={setTasks}
             tasks={tasks}
             timeToSeconds={timeToSeconds}
             />

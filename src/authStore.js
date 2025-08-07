@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react';
 
-let data = null;
+let data = [];
 const dataListeners = new Set();
 
 export function setData(newData) {
@@ -8,7 +8,7 @@ export function setData(newData) {
         console.warn("Refused to set data to a function. You probably meant to use a React setState updater.");
         return;
     }
-    data = newData;
+    data = newData || [];
     dataListeners.forEach(l => l());
 }
 

@@ -4,7 +4,9 @@ import {
 import {
     get,
     getDatabase,
+    push,
     ref,
+    remove,
     set,
 } from "firebase/database"
 import {
@@ -71,33 +73,52 @@ export const handleGoogleSignOut = async () => {
 export const saveToDatabase = async (id, data) => {
     if (!await getUser()) {
         console.log("No user logged in, setting to localstorage");
-        localStorage.setItem(`tasks-${id}`, JSON.stringify(data));
+        localStorage.setItem(`tasks`, JSON.stringify(data));
+        return
+    }
+
+    try {
+        if (data.type != (id === 1 ? "general" : "today")) {
+            console.log(`Wrong dbRefField, got ${data.type}, but should be ${id === 1 ? "general" : "today"}`)
+            return;
+        }
+        const user = await getUser();
+        const taskRef = ref(db, `users/${user.uid}/${id === 1 ? "general" : "today"}/${data.id}`);
+        set(taskRef, data);
+    } catch (error) {
+        console.warn("Error saving to db.\nError:", error);
+    }
+}
+
+export const deleteFormDatabase = async (listId, taskId) => {
+    if (!await getUser()) {
+        console.log("No user logged in, removing from localstorage");
+        localStorage.removeItem(taskId);
         return
     }
 
     try {
         const user = await getUser();
-        const tasksRef = ref(db, `users/${user.uid}/tasks-${id}`);
-        set(tasksRef, data);
+        const taskRef = ref(db, `users/${user.uid}/${listId === 1 ? "general" : "today"}/${taskId}`);
+        remove(taskRef);
     } catch (error) {
-        console.log("Error saving to db.\nError:", error);
+        console.warn("Error deleting to db.\nError:", error);
     }
 }
 
-export const getFromDatabase = async (id) => {
+export const getFromDatabase = async () => {
     if (!await getUser()) {
         console.log("No user logged in, getting from localStorage");
-        const saved = localStorage.getItem(`tasks-${id}`);
-        return saved ? JSON.parse(JSON.parse(saved)) : [];
+        const saved = localStorage.getItem(`tasks`);
+        return saved ? JSON.parse(saved) : [];
     }
 
     try {
         const user = await getUser();
-        const tasksRef = ref(db, `users/${user.uid}/tasks-${id}`);
-        const snapshotVal = (await get(tasksRef)).val();
-        const savedTasks = snapshotVal ? JSON.parse(snapshotVal) : [];
-        return savedTasks;
+        const tasksRef = ref(db, `users/${user.uid}`);
+        const snapshotVal = (await get(tasksRef))?.val();
+        return snapshotVal
     } catch (error) {
-        console.log("User isn't logged in.\nError:", error);
+        console.warn("User isn't logged in.\nError:", error);
     }
 }

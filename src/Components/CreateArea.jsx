@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import TaskOptions from "./TaskOptions"
 import { setData, useData } from "../authStore"
+import { getRandomId } from "../utils/generation.utils"
+import { saveToDatabase } from "../utils/firebase.utils"
 
 export default function CreateArea(props){
     const [name, setName] = useState("")
@@ -42,7 +44,7 @@ export default function CreateArea(props){
 
         const startTime = props.timeToSeconds(hours, minutes, seconds)
         const newTask = {
-            id: crypto.randomUUID(),
+            id: getRandomId(),
             name: name,
             completed: false,
             type: props.id === 1 ? "general" : "today",
@@ -55,6 +57,7 @@ export default function CreateArea(props){
         }
         if (name.trim()) {
             setTasks([...tasks, newTask]);
+            saveToDatabase(props.id, newTask)
         }
         setHours(0)
         setMinutes(0)
@@ -104,7 +107,7 @@ export default function CreateArea(props){
     return(
         <div className="createArea">
             {/* <p>tasks: {tasks}</p> */}
-            <input type="text" className="taskInput" onChange={(e) => setName(capitalize(e.target.value))} value={name}/>
+            <input type="text" className="taskInput" onChange={(e) => setName(capitalize(e.target.value))} value={name} autoComplete="off" autoCorrect="off" />
             
             <div className="bottomCreate">
                 <button className="modeButton">
