@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import TaskOptions from "./TaskOptions"
 import { setData, useData } from "../authStore"
-import { getRandomId } from "../utils/generation.utils"
 import { saveToDatabase } from "../utils/firebase.utils"
 
 export default function CreateArea(props){
@@ -44,7 +43,7 @@ export default function CreateArea(props){
 
         const startTime = props.timeToSeconds(hours, minutes, seconds)
         const newTask = {
-            id: getRandomId(),
+            id: Date.now() + Math.floor(Math.random() * 10000),
             name: name,
             completed: false,
             type: props.id === 1 ? "general" : "today",

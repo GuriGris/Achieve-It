@@ -15,24 +15,22 @@ export default function EditWindow(props){
 
    function handleSave(e){
        e.preventDefault();
-       
-       if (props.task.mode === "Time") {
-           const newStartTime = props.timeToSeconds(newStartHours, newStartMinutes, 0);
-           const newCurrentTime = props.timeToSeconds(newHoursLeft, newMinutesLeft, 0);
-           props.updateTask(props.task.id, { 
-               name: newName, 
-               startTime: newStartTime, 
-               currentTime: newCurrentTime
-           });
-       } else {
-           props.updateTask(props.task.id, { 
-               name: newName, 
-               startReps: newStartReps, 
-               reps: newCurrentReps
-           });
-       }
 
-       props.updatePositions(props.task.id, props.task.position, newPosition)
+        let updatedFields = { name: newName, position: newPosition };
+        
+        if (props.task.mode === "Time") {
+            updatedFields.startTime = props.timeToSeconds(newStartHours, newStartMinutes, 0);
+            updatedFields.currentTime = props.timeToSeconds(newHoursLeft, newMinutesLeft, 0);
+        } else {
+            updatedFields.startReps = newStartReps;
+            updatedFields.reps = newCurrentReps;
+        }
+        
+        props.updateTask(props.task.id, updatedFields);
+        
+        if (newPosition !== props.task.position) {
+            props.updatePositions(props.task.id, props.task.position, newPosition, updatedFields);
+        }
        
        props.closeEdit();
    }

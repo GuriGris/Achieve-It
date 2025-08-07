@@ -11,17 +11,9 @@ import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "fire
 export default function TaskBox(props){
 
     const tasks = useData();
-    const setTasks = setData;
     const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
-
-    const getTasks = () => tasks;
-    window.getTasks = getTasks;
-
-    useEffect(() => {
-        console.log("taskchange")
-    }, [tasks]);
-
+    
     const fetchTasks = async () => {
         const data = await getFromDatabase();
 
@@ -33,7 +25,7 @@ export default function TaskBox(props){
         }
 
         if (data !== -1) {
-            setTasks(newData);
+            setData(newData);
         }
     }
 
@@ -102,21 +94,33 @@ export default function TaskBox(props){
         return hours * 3600 + minutes * 60 + seconds;
     }
 
-    function updatePositions(taskId, from, to){
-        const taskType = findTaskWithId(taskId).type;
-
-        const listTasks = tasks.filter(task => task.type === taskType).sort((a, b) => a.position - b.position);
+    function updatePositions(taskId, from, to, updatedFields){
+        let currentTasks = tasks.map(task => 
+            task.id === taskId 
+                ? { ...task, ...updatedFields }
+                : task
+        );
         
-        const [movedTask] = listTasks.splice(from - 1, 1)
+        const taskType = currentTasks.find(task => task.id === taskId).type;
 
-        listTasks.splice(to - 1, 0, movedTask)
+        const listTasks = currentTasks.filter(task => task.type === taskType);
 
-        listTasks.forEach((task, index) => {
-            task.position = index + 1
+        listTasks.forEach((task) => {
+            if (task.id !== taskId){
+                if (from <= task.position && task.position <= to){
+                task.position -= 1
+                } else if (from >= task.position && task.position >= to){
+                    task.position += 1
+                }
+            }
         });
 
-        setTasks([...tasks])
-        saveToDatabase(props.id, findTaskWithId(taskId));
+        setData([...currentTasks])
+        listTasks.forEach(task => {
+            if (task.type === taskType) {
+                saveToDatabase(props.id, task);
+            }
+        });
     }
 
     function deleteTask(taskId){
@@ -132,7 +136,7 @@ export default function TaskBox(props){
             }
         })
 
-        setTasks(updatedTasks);
+        setData(updatedTasks);
         deleteFormDatabase(props.id, taskId);
     }
 
@@ -166,8 +170,8 @@ export default function TaskBox(props){
             : task
         );
 
-        setTasks(updatedTasks);
-        console.log(tasks)
+        console.log("Updated tasks:", updatedTasks)
+        setData(updatedTasks);
         saveToDatabase(props.id, findTaskWithId(taskId));
     }
 
@@ -178,7 +182,7 @@ export default function TaskBox(props){
             : task
         );
 
-        setTasks(updatedTasks);
+        setData(updatedTasks);
         saveToDatabase(props.id, findTaskWithId(taskId));
     }
 
