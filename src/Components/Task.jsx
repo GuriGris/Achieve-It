@@ -53,7 +53,7 @@ export default function Task(props){
     return(
         <div className="taskWrapper">
             <div className="task">
-                {props.editingState ? 
+                {props.editingState && !props.editingTask ? 
                     <div className="deleteContainer">
                             <img 
                             src="Images/deleteIcon.svg"

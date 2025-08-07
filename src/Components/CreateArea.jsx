@@ -114,7 +114,7 @@ export default function CreateArea(props){
                     <div 
                         className={`modeOption ${mode === "Time" ? "activeMode" : ""}`}
                         onClick={() => setMode("Time")}
-                        style={{borderBottom: "solid 2px black"}}
+                        style={{borderBottom: "solid var(--border-md) black"}}
                     >
                         <p>Time</p>
                     </div>

@@ -57,10 +57,9 @@ export default function TaskBox(props){
             if (user) {
                 const userId = user.uid;
                 const userGeneralRef = ref(db, `users/${userId}/general`);
-                const userTodayRef = ref(db, `users/${userId}/general`);
+                const userTodayRef = ref(db, `users/${userId}/today`);
 
                 const childChange = snapshot => {
-                    console.log(snapshot.val())
                     fetchTasks()
                 }
 
@@ -154,6 +153,7 @@ export default function TaskBox(props){
             updatePositions={updatePositions}
             length={currentTasks.length}
             editingState={editingState}
+            editingTask={editingTask}
             setEditingTask={setEditingTask}
             />
         )
@@ -206,9 +206,9 @@ export default function TaskBox(props){
             />
             <div className="taskContainer" key={incomplete}>
                 {currentTasks.length > 0 ?
-                    <h4 className={`${"editSwitch"} ${editingState ? "activeEdit" : null}`} onClick={() => setEditingState(!editingState)}>
+                    <button className={`${"editSwitch"} ${editingState ? "activeEdit" : null}`} onClick={() => setEditingState(!editingState)}>
                         Edit: {editingState ? "on" : "off"}
-                    </h4> 
+                    </button> 
                 :
                     null
                 }
