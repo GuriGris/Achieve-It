@@ -778,6 +778,7 @@ body:has(.modalEdit) {
 @media (max-width: 575.98px) {
   :root{
     --space-md: 1rem; 
+    --font-size-xl: 2.5rem;
   }
 
   html{
