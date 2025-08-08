@@ -3,7 +3,7 @@ import InfoText from "./InfoText";
 import CreateArea from "./CreateArea";
 import Task from "./Task";
 import EditWindow from "./EditWindow";
-import { auth, db, getFromDatabase, saveToDatabase, deleteFormDatabase } from "../utils/firebase.utils";
+import { auth, db, getFromDatabase, saveToDatabase, deleteFromDatabase } from "../utils/firebase.utils";
 import { onAuthStateChanged } from "firebase/auth";
 import { getUser, setAuthData, setData, useData, } from "../authStore";
 import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database";
@@ -13,6 +13,12 @@ export default function TaskBox(props){
     const tasks = useData();
     const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
+
+    // useEffect(() => {
+    //     tasks.forEach(task => {
+    //         deleteFromDatabase(1, task.id)
+    //     })
+    // }, [])
 
     const fetchTasks = async () => {
         const data = await getFromDatabase();
@@ -99,8 +105,8 @@ export default function TaskBox(props){
         });
     }, []);
 
-    const findTaskWithId = taskId => {
-        return tasks.find(task => task.id === taskId) || [];
+    function findTaskWithId (taskId, updatedTasks){
+        return updatedTasks.find(task => task.id === taskId);
     }
 
     function secondsToTime(totalSeconds) {
@@ -144,7 +150,7 @@ export default function TaskBox(props){
     }
 
     function deleteTask(taskId){
-        const deletedPosition = findTaskWithId(taskId).position
+        const deletedPosition = findTaskWithId(taskId, tasks).position
 
         const updatedTasks = (Array.isArray(tasks) ? tasks : []).filter(task =>
             task.id !== taskId
@@ -157,7 +163,7 @@ export default function TaskBox(props){
         })
 
         setData(updatedTasks);
-        deleteFormDatabase(props.id, taskId);
+        deleteFromDatabase(props.id, taskId);
     }
 
     function closeEdit(){
@@ -184,15 +190,14 @@ export default function TaskBox(props){
     }
 
     function updateTask(taskId, updatedFields) {
-        const updatedTasks = (Array.isArray(tasks) ? tasks : []).map(task =>
+        const updatedTasks = tasks.map(task =>
             task.id === taskId
             ? { ...task, ...updatedFields }
             : task
         );
 
-        console.log("Updated tasks:", updatedTasks)
         setData(updatedTasks);
-        saveToDatabase(props.id, findTaskWithId(taskId));
+        saveToDatabase(props.id, findTaskWithId(taskId, updatedTasks));
     }
 
     function checkOff(taskId){
@@ -203,7 +208,7 @@ export default function TaskBox(props){
         );
 
         setData(updatedTasks);
-        saveToDatabase(props.id, findTaskWithId(taskId));
+        saveToDatabase(props.id, findTaskWithId(taskId, updatedTasks));
     }
 
     const todayTasks = tasks ? tasks.filter(task => task.type === "today").sort((a, b) => a.position - b.position) : []

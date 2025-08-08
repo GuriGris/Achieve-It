@@ -89,7 +89,7 @@ export const saveToDatabase = async (id, data) => {
     }
 }
 
-export const deleteFormDatabase = async (listId, taskId) => {
+export const deleteFromDatabase = async (listId, taskId) => {
     if (!await getUser()) {
         console.log("No user logged in.");
         return

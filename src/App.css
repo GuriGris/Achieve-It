@@ -735,6 +735,7 @@ body:has(.modalEdit) {
   align-items: center;
   box-shadow: var(--shadow-heavy);
   border-radius: var(--radius-small);
+  font-size: var(--font-size-button);
 }
 
 .saveButton{
@@ -828,6 +829,10 @@ body:has(.modalEdit) {
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 1199.98px) {
+  :root{
+    --button-height: 2.5rem;
+  }
+
   .container{
     width: 85%;
   }
@@ -838,6 +843,10 @@ body:has(.modalEdit) {
 
   .editContainer{
     width: 30%;
+  }
+
+  input, textarea, select {
+    font-size: clamp(16px, var(--font-size-input)) !important;
   }
 }
 
