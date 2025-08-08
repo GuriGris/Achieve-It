@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useRef } from "react"
 import TaskOptions from "./TaskOptions"
 import { setData, useData } from "../authStore"
 import { saveToDatabase } from "../utils/firebase.utils"

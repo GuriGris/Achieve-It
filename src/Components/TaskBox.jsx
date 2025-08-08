@@ -3,10 +3,30 @@ import InfoText from "./InfoText";
 import CreateArea from "./CreateArea";
 import Task from "./Task";
 import EditWindow from "./EditWindow";
-import { auth, db, getFromDatabase, saveToDatabase, deleteFromDatabase } from "../utils/firebase.utils";
-import { onAuthStateChanged } from "firebase/auth";
-import { getUser, setAuthData, setData, useData, } from "../authStore";
-import { onChildAdded, onChildChanged, onChildRemoved, onValue, ref } from "firebase/database";
+import {
+    auth,
+    db,
+    getFromDatabase,
+    saveToDatabase,
+    deleteFromDatabase,
+    getLastVisit,
+    updateLastVisit,
+} from "../utils/firebase.utils";
+import {
+    onAuthStateChanged
+} from "firebase/auth";
+import {
+    getUser,
+    setAuthData,
+    setData,
+    useData,
+} from "../authStore";
+import {
+    onChildAdded,
+    onChildChanged,
+    onChildRemoved,
+    ref,
+} from "firebase/database";
 
 export default function TaskBox(props){
 
@@ -39,21 +59,15 @@ export default function TaskBox(props){
 
     }, [])
 
-    function isNewDay() {
-
+    const getDay = () => {
+        return Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24);
     }
 
-    const now = new Date()
-
-    useEffect(() => {
-
-    }, [], [now.getDate()])
-
-    useEffect(() => {
-        if (isNewDay()) {
-            alert("It's a new day!");
-        }
-    }, []);
+    const isNewDay = async () => {
+        const lastVisit = await getLastVisit();
+        console.log(lastVisit, getDay(), lastVisit && lastVisit !== getDay())
+        return lastVisit && lastVisit !== getDay();
+    }
 
     useEffect(() => {
         fetchTasks(props.id);
@@ -71,13 +85,19 @@ export default function TaskBox(props){
     }, [props.id]);
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
+            if (await isNewDay()) {
+                console.log("It's a new day!");
+                updateLastVisit();
+            }
+
             if (user) {
                 const userId = user.uid;
                 const userGeneralRef = ref(db, `users/${userId}/general`);
                 const userTodayRef = ref(db, `users/${userId}/today`);
 
                 const childChange = snapshot => {
+                    console.log("gseunioj")
                     fetchTasks()
                 }
 
@@ -163,6 +183,10 @@ export default function TaskBox(props){
         })
 
         setData(updatedTasks);
+        
+        updatedTasks.forEach(task => {
+            saveToDatabase(props.id, task);
+        });
         deleteFromDatabase(props.id, taskId);
     }
 

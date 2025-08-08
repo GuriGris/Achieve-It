@@ -4,7 +4,7 @@
   --container-width: 75%;
   --taskbox-width: 45%;
   --taskbox-min-height: 18.75rem;
-  --task-height: 1.875rem;
+  --task-height: 2.2rem;
   --taskwrapper-height: 3.125rem;
   --create-area-height: 6.25rem;
   --create-area-width: 80%;
@@ -25,6 +25,7 @@
   --font-size-input: 1.375rem;
   --font-size-button: 1.125rem;
   --font-size-heading: 1.375rem;
+  --font-size-header: 2rem;
   
   /* Spacing */
   --space-xs: 0.3125rem;
@@ -139,7 +140,7 @@ h1{
   margin: 0;
   font-weight: 500;
   font-family: "Architects Daughter", cursive;
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-header);
 }
 
 h1 strong{
@@ -359,6 +360,7 @@ input::-webkit-inner-spin-button {
 
 .taskContainer{
   width: 100%;
+  overflow-x: hidden;
   margin-bottom: 0;
   padding: 0;
   list-style-position: inside;
@@ -395,22 +397,19 @@ input::-webkit-inner-spin-button {
   justify-self: end;
 }
 
-.deleteContainer{
-  width: 10%;
-  height: 100%;
-}
-
 .deleteTask{
   display: flex;
+  align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 70%;
   padding: 0;
   margin: 0;
   animation: fadeInDropdown var(--animation-medium) forwards;
 }
 
 .taskPosition{
-  height: var(--task-height);
+  height: 100%;
+  font-weight: bold;
   display: flex;
   align-items: center;
   font-family: "Architects Daughter", cursive;
@@ -418,11 +417,6 @@ input::-webkit-inner-spin-button {
   width: 100%;
   margin: 0;
   animation: fadeInDropdown var(--animation-medium) forwards;
-}
-
-.task img{
-  position: relative;
-  top: 1px;
 }
 
 .taskWrapper{
@@ -439,14 +433,31 @@ input::-webkit-inner-spin-button {
   cursor: pointer;
 }
 
+.taskWrapper.editing{
+  background-color: rgb(243, 243, 243);
+  box-shadow: 0 0 1px 1px lightgray;
+}
+
+.taskBox :nth-child(3n).editing{
+  animation: idleShake1 .6s linear infinite;
+}
+
+.taskBox :nth-child(3n + 1).editing{
+  animation: idleShake3 .6s linear infinite;
+}
+
+.taskBox :nth-child(3n + 2).editing{
+  animation: idleShake2 .6s linear infinite;
+}
+
 .task.completed {
   text-decoration: line-through;
   color: var(--color-gray);
 }
 
 .taskName{
-  height: 100%;
   width: 100%;
+  height: 100%;
   font-size: var(--font-size-large);
   overflow: hidden;
   white-space: nowrap;
@@ -491,7 +502,7 @@ input::-webkit-inner-spin-button {
 .secondsBar{
   position: relative;
   height: var(--border-md);
-  width: 90%;
+  width: 100%;
   background-color: var(--color-gray);
   border-radius: var(--radius-small);
 }
@@ -510,11 +521,12 @@ input::-webkit-inner-spin-button {
 
 .reps{
   margin: 0;
-  font-size: var(--font-size-xl);
+  height: 100%;
+  font-size: var(--font-size-large);
 }
 
 .editButton{
-  height: 100%;
+  height: 80%;
   width: 30px;
   border-radius: var(--radius-medium);
   opacity: 0.7;
@@ -539,7 +551,6 @@ input::-webkit-inner-spin-button {
 
 .doneHeading{
   display: flex;
-  justify-self: center;
   justify-content: center;
   font-family: "Architects Daughter", cursive;
   width: 40%;
@@ -547,6 +558,7 @@ input::-webkit-inner-spin-button {
   border-radius: var(--radius-large);
   padding: 8px;
   box-shadow: var(--shadow-medium);
+  margin: 0 auto;
 }
 
 .doneDisplay{
@@ -773,17 +785,47 @@ body:has(.modalEdit) {
   }
 }
 
+@keyframes idleShake1 {
+  0%   { transform: translateX(0) rotate(0deg); }
+  10%  { transform: translateX(-0.6px) rotate(-0.12deg); }
+  30%  { transform: translateX(1.2px) rotate(0.24deg); }
+  60%  { transform: translateX(-1.2px) rotate(-0.24deg); }
+  90%  { transform: translateX(0.6px) rotate(0.12deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes idleShake2 {
+  0%   { transform: translateX(0) rotate(0deg); }
+  10%  { transform: translateX(0.6px) rotate(0.12deg); }
+  30%  { transform: translateX(-1.2px) rotate(-0.24deg); }
+  60%  { transform: translateX(1.2px) rotate(0.24deg); }
+  90%  { transform: translateX(-0.6px) rotate(-0.12deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes idleShake3 {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  10%  { transform: translate(-0.5px, 0.3px) rotate(-0.1deg); }
+  30%  { transform: translate(1.1px, -0.4px) rotate(0.22deg); }
+  60%  { transform: translate(-1.1px, 0.4px) rotate(-0.22deg); }
+  90%  { transform: translate(0.5px, -0.3px) rotate(0.1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
 /* Media Queries */
 
 /* Extra Small devices (phones, 576px and down) */
 @media (max-width: 575.98px) {
   :root{
     --space-md: 1rem; 
-    --font-size-xl: 2.5rem;
+    --font-size-header: 2.5rem;
+    --task-height: 2rem;
+    --task-grid-height: 1.875rem;
+    --taskwrapper-height: 3.5rem;
   }
 
   html{
-    font-size: 3.3vw;
+    font-size: 3.5vw;
   }
 
   .container{
@@ -798,6 +840,15 @@ body:has(.modalEdit) {
   .editContainer{
     width: 75%;
   }
+
+  .deleteTask{
+    height: 90%;
+  }
+
+  .editButton{
+    height: 90%;
+  }
+
 
   input, textarea, select {
     font-size: 16px !important;

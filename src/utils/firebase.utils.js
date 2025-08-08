@@ -122,14 +122,23 @@ export const getFromDatabase = async () => {
 
 export const getLastVisit = async () => {
     const user = await getUser();
+    if (!user) {
+        console.warn("Can't get from The Database, user isn't logged in.");
+        return 0
+    }
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     const lastVisit = await get(lastVisitRef);
-    return lastVisit;
+    console.log(lastVisit, user.uid, lastVisitRef)
+    return lastVisit * 1000 * 60 * 60 * 24;
 }
 
-export const setLastVisit = async () => {
-    const Date = Math.floor(Date.now() / 1000 / 60 / 60 / 24)
+export const updateLastVisit = async () => {
+    const date = Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24)
     const user = await getUser();
+    if (!user) {
+        console.warn("Can't get from The Database, user isn't logged in.");
+        return
+    }
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
-    set(lastVisitRef, Date)
+    set(lastVisitRef, date)
 }

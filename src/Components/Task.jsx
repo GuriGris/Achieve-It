@@ -51,17 +51,15 @@ export default function Task(props){
     const timePercentage = Math.floor(((props.task.startTime - props.task.currentTime) / props.task.startTime) * 100) + "%"
 
     return(
-        <div className="taskWrapper">
+        <div className={`taskWrapper ${props.editingState ? "editing" : null}`}>
             <div className="task">
                 {props.editingState && !props.editingTask ? 
-                    <div className="deleteContainer">
-                            <img 
-                            src="Images/deleteIcon.svg"
-                            alt="trashcan icon"
-                            onClick={() => props.deleteTask(props.task.id)}
-                            className="deleteTask"
-                            />
-                    </div>
+                    <img 
+                    src="Images/deleteIcon.svg"
+                    alt="trashcan icon"
+                    onClick={() => props.deleteTask(props.task.id)}
+                    className="deleteTask"
+                    />
                 :
                     <p className="taskPosition">{props.task.position}.</p>
                 }

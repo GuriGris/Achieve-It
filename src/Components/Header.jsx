@@ -19,8 +19,7 @@ export default function Header(){
 
     return(
         <div className="header">
-            <h1><strong>Achieve</strong>-It</h1>
-            {displayName && <p style={{margin: 0}}>Hello {displayName}</p>}
+            <h1><b>Achieve</b>-It</h1>
         </div>
     )
 }
