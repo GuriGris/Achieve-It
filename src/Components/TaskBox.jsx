@@ -205,7 +205,6 @@ export default function TaskBox(props){
             key = {task.id}
             task = {task}
             tasks={tasks}
-            checkOff = {checkOff}
             secondsToTime = {secondsToTime}
             updateTask = {updateTask}
             deleteTask={deleteTask}
@@ -222,17 +221,6 @@ export default function TaskBox(props){
         const updatedTasks = tasks.map(task =>
             task.id === taskId
             ? { ...task, ...updatedFields }
-            : task
-        );
-
-        setData(updatedTasks);
-        saveToDatabase(props.id, findTaskWithId(taskId, updatedTasks));
-    }
-
-    function checkOff(taskId){
-        const updatedTasks = (Array.isArray(tasks) ? tasks : []).map(task =>
-        task.id === taskId
-            ? { ...task, completed: !task.completed }
             : task
         );
 

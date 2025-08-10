@@ -66,7 +66,7 @@ export default function CreateArea(props){
 
     function addTime(){
         if (minutes != 55){
-            setMinutes(minutes + 5)
+            setMinutes(minutes + 1)
         } else{
             setHours(hours + 1)
             setMinutes(0)
