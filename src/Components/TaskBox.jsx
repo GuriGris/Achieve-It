@@ -10,7 +10,8 @@ import {
     saveToDatabase,
     deleteFromDatabase,
     updateLastVisit,
-    isNewDay
+    isNewDay,
+    saveSingleToDatabase
 } from "../utils/firebase.utils";
 import {
     onAuthStateChanged
@@ -60,25 +61,46 @@ export default function TaskBox(props){
         setDate(new Date().getDay())
 
         const interval = setInterval(() =>{
-            console.log("hello")
+            console.log("checkingForNewDay")
             setDate(new Date().getDay())
         }, 60000)
 
         return () => clearInterval(interval);
     }, [])
 
-    useEffect(() => {
-        const checkForNewDay = async () => {
-            const isNew = await isNewDay();
-            
-            if (isNew) {
-                console.log("It's a new day! Resetting tasks...");
-                //dailReset();
-            }
-        };
+    const checkForNewDay = async (user = null) => {
+        const isNew = await isNewDay(user);
         
+        if (isNew) {
+            const resetTaskCompletion = async (user) => {                
+                getFromDatabase().then(tasksTypes => { // får både general og today tasks i en liste, [{general}, {today}]
+                    console.log(tasksTypes)
+                    const newTasks = tasksTypes.map(tasks => 
+                        Object.fromEntries(
+                            Object.entries(tasks).map(([key, task]) => [
+                                key,
+                                {
+                                    ...task,
+                                    currentTime: task.startTime || 0,
+                                    reps: task.startReps || 0
+                                }
+                            ])
+                        )
+                    );
+                    
+                    // alert("Resetted tasks!\nReason: New day.") // removed because is running four times
+                    setData(newTasks)
+                    saveToDatabase(1, newTasks[0])
+                    saveToDatabase(2, newTasks[1])
+                })
+            }
+            resetTaskCompletion(user)
+        }
+    };
+
+    useEffect(() => {
         checkForNewDay(); 
-    }, [], [date]);
+    }, [], [date], [tasks]);
 
     useEffect(() => {
         fetchTasks(props.id);
@@ -97,6 +119,8 @@ export default function TaskBox(props){
 
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
+            checkForNewDay(user);
+
             if (user) {
                 const userId = user.uid;
                 const userGeneralRef = ref(db, `users/${userId}/general`);
@@ -169,7 +193,7 @@ export default function TaskBox(props){
         setData([...currentTasks])
         listTasks.forEach(task => {
             if (task.type === taskType) {
-                saveToDatabase(props.id, task);
+                saveSingleToDatabase(props.id, task);
             }
         });
     }
@@ -190,7 +214,7 @@ export default function TaskBox(props){
         setData(updatedTasks);
         
         updatedTasks.forEach(task => {
-            saveToDatabase(props.id, task);
+            saveSingleToDatabase(props.id, task);
         });
         deleteFromDatabase(props.id, taskId);
     }
@@ -225,7 +249,7 @@ export default function TaskBox(props){
         );
 
         setData(updatedTasks);
-        saveToDatabase(props.id, findTaskWithId(taskId, updatedTasks));
+        saveSingleToDatabase(props.id, findTaskWithId(taskId, updatedTasks));
     }
 
     const todayTasks = tasks ? tasks.filter(task => task.type === "today").sort((a, b) => a.position - b.position) : []

@@ -71,7 +71,8 @@ export const handleGoogleSignOut = async () => {
     }
 }
 
-export const saveToDatabase = async (id, data) => {
+export const saveSingleToDatabase = async (id, data) => {
+    console.log("singlesave")
     if (!await getUser()) {
         console.log("No user logged in.");
         return
@@ -84,6 +85,24 @@ export const saveToDatabase = async (id, data) => {
         }
         const user = await getUser();
         const taskRef = ref(db, `users/${user.uid}/${id === 1 ? "general" : "today"}/${data.id}`);
+        set(taskRef, data);
+    } catch (error) {
+        console.warn("Error saving to db.\nError:", error);
+    }
+}
+
+export const saveToDatabase = async (id, data) => {
+    console.log("multisave")
+    if (!await getUser()) {
+        console.log("No user logged in.");
+        return
+    }
+
+    console.log(id, data)
+
+    try {
+        const user = await getUser();
+        const taskRef = ref(db, `users/${user.uid}/${id === 1 ? "general" : "today"}`);
         set(taskRef, data);
     } catch (error) {
         console.warn("Error saving to db.\nError:", error);
@@ -115,7 +134,7 @@ export const getFromDatabase = async () => {
         const user = await getUser();
         const tasksRef = ref(db, `users/${user.uid}`);
         const snapshotVal = (await get(tasksRef))?.val();
-        return snapshotVal
+        return [snapshotVal?.general, snapshotVal?.today]
     } catch (error) {
         console.warn("User isn't logged in.\nError:", error);
     }
@@ -127,8 +146,7 @@ export const updateLastVisit = async () => {
 
     const date = new Date().toDateString();
 
-    console.log("updateLastVisit")
-    localStorage.setItem("lastVisit", date);
+    // localStorage.setItem("lastVisit", date);
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     set(lastVisitRef, date);
 }
@@ -141,12 +159,12 @@ export const isNewDay = async (authUser) => {
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     const snapshot = await get(lastVisitRef);
 
-    const localLastVisit = localStorage.getItem("lastVisit");
-    const lastVisit = snapshot.val() || localLastVisit;
-    console.log(localLastVisit, snapshot.val(), lastVisit)
+    // const localLastVisit = localStorage.getItem("lastVisit");
+    const lastVisit = snapshot.val();
 
     if (!lastVisit || lastVisit !== today) {
         await set(lastVisitRef, today);
+        return true
     }
     
     return false
