@@ -121,40 +121,33 @@ export const getFromDatabase = async () => {
     }
 }
 
-export const getLastVisit = async () => {
-    const user = await getUser();
-    if (!user) return;
-
-    const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
-    const lastVisit = await get(lastVisitRef);
-    console.log(lastVisit.val(), user.uid)
-    return lastVisit.val();
-}
-
 export const updateLastVisit = async () => {
-    const date = new Date().toDateString()
     const user = await getUser();
     if (!user) return;
 
+    const date = new Date().toDateString();
+
+    console.log("updateLastVisit")
+    localStorage.setItem("lastVisit", date);
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
-    set(lastVisitRef, date)
+    set(lastVisitRef, date);
 }
 
-export const isNewDay = async () => {
-    const user = await getUser();
-    if (!user) return false;
+export const isNewDay = async (authUser) => {
+    const user = await getUser() || authUser;
+    if (!user) return false
 
-    const today = new Date().toDateString()
+    const today = new Date().toDateString();
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     const snapshot = await get(lastVisitRef);
-    const lastVisit = snapshot.val();
 
-    console.log("hello", lastVisit)
+    const localLastVisit = localStorage.getItem("lastVisit");
+    const lastVisit = snapshot.val() || localLastVisit;
+    console.log(localLastVisit, snapshot.val(), lastVisit)
 
     if (!lastVisit || lastVisit !== today) {
         await set(lastVisitRef, today);
-        return true; 
     }
     
-    return false; 
+    return false
 }

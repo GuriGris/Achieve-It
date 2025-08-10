@@ -9,7 +9,6 @@ import {
     getFromDatabase,
     saveToDatabase,
     deleteFromDatabase,
-    getLastVisit,
     updateLastVisit,
     isNewDay
 } from "../utils/firebase.utils";
