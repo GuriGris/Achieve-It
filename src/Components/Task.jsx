@@ -16,8 +16,7 @@ export default function Task(props){
         if (props.task.reps > 1){
             props.updateTask(props.task.id, { reps: props.task.reps - 1 });
         } else {
-            props.checkOff(props.task.id)
-            props.updateTask(props.task.id, { reps: props.task.startReps });
+            props.updateTask(props.task.id, { reps: props.task.startReps, completed: true });
         }
     }
 
@@ -39,8 +38,8 @@ export default function Task(props){
 
             if (timeLeft === 0) {
                 setRunningTime(false);
-                props.checkOff(props.task.id)
-                props.updateTask(props.task.id, { currentTime: props.task.startTime })
+                console.log("id", props.task.id)
+                props.updateTask(props.task.id, { currentTime: props.task.startTime, completed: true })
             }
         }, 1000);
 
@@ -65,7 +64,7 @@ export default function Task(props){
                 }
                 
                 <li
-                onClick={() => props.checkOff(props.task.id)}
+                onClick={() => props.updateTask(props.task.id, {completed: !props.task.completed})}
                 title={props.task.name}
                 style={{
                     textDecoration: props.task.completed ? "line-through" : "none",
@@ -82,7 +81,7 @@ export default function Task(props){
                             <p>
                                 {formattedStartTime}
                             </p>
-                        : props.task.startReps > 2 ?
+                        : props.task.startReps >= 2 ?
                             <p>
                                 {props.task.startReps}x
                             </p>
