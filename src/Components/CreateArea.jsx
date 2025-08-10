@@ -106,7 +106,19 @@ export default function CreateArea(props){
     return(
         <div className="createArea">
             {/* <p>tasks: {tasks}</p> */}
-            <input type="text" className="taskInput" onChange={(e) => setName(capitalize(e.target.value))} value={name} autoComplete="off" autoCorrect="off" />
+            <input 
+            type="text" 
+            className="taskInput" 
+            onChange={(e) => setName(capitalize(e.target.value))} 
+            value={name} 
+            autoComplete="off" 
+            autoCorrect="off" 
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            }}
+            />
             
             <div className="bottomCreate">
                 <button className="modeButton">

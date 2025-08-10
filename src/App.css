@@ -389,11 +389,11 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
 }
 
-.task :nth-child(1), .task :nth-child(2) {
+.task :nth-child(1), .task :nth-child(2), .task :nth-child(3) {
   justify-self: start;
 }
 
-.task :nth-child(4), .task :nth-child(3) {
+.task :nth-child(4) {
   justify-self: end;
 }
 

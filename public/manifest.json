@@ -1,6 +1,6 @@
 {
-  "name": "Achieve-It Task Manager",
-  "short_name": "Achieve-It",
+  "name": "BoxPlan Task Manager",
+  "short_name": "BoxPlan",
   "description": "Track your daily and general tasks",
   "start_url": "/",
   "display": "standalone",

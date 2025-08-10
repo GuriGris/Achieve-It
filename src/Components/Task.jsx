@@ -9,7 +9,7 @@ export default function Task(props){
     const formattedTime = `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`
     const secondsProgress = seconds > 0 ? ((seconds)/ 60) * 100 : 100;
 
-    const { hours: startHours, minutes: startMinutes } = props.secondsToTime(props.startTime);
+    const { hours: startHours, minutes: startMinutes } = props.secondsToTime(props.task.startTime);
     const formattedStartTime = `${startHours > 0 ? startHours + "h" : ("")}${startMinutes > 0 && startHours > 0 ? " " : ""}${startMinutes > 0 ? startMinutes + "min" : ("")}`;
 
     function removeRep(){
@@ -78,7 +78,7 @@ export default function Task(props){
 
                 {props.task.completed ? (
                     <div className="doneDisplay">
-                        {props.mode == "Time" && hasTime ? 
+                        {props.task.mode == "Time" && hasTime ? 
                             <p>
                                 {formattedStartTime}
                             </p>

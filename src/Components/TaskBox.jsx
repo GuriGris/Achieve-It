@@ -11,6 +11,7 @@ import {
     deleteFromDatabase,
     getLastVisit,
     updateLastVisit,
+    isNewDay
 } from "../utils/firebase.utils";
 import {
     onAuthStateChanged
@@ -33,6 +34,7 @@ export default function TaskBox(props){
     const tasks = useData();
     const [editingState, setEditingState] = useState(false)
     const [editingTask, setEditingTask] = useState(null)
+    const [date, setDate] = useState(new Date().getDay())
 
     // useEffect(() => {
     //     tasks.forEach(task => {
@@ -55,19 +57,29 @@ export default function TaskBox(props){
         }
     }
 
-    useEffect(() => {
+    useEffect(() =>{
+        setDate(new Date().getDay())
 
+        const interval = setInterval(() =>{
+            console.log("hello")
+            setDate(new Date().getDay())
+        }, 60000)
+
+        return () => clearInterval(interval);
     }, [])
 
-    const getDay = () => {
-        return Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24);
-    }
-
-    const isNewDay = async () => {
-        const lastVisit = await getLastVisit();
-        console.log(lastVisit, getDay(), lastVisit && lastVisit !== getDay())
-        return lastVisit && lastVisit !== getDay();
-    }
+    useEffect(() => {
+        const checkForNewDay = async () => {
+            const isNew = await isNewDay();
+            
+            if (isNew) {
+                console.log("It's a new day! Resetting tasks...");
+                //dailReset();
+            }
+        };
+        
+        checkForNewDay(); 
+    }, [], [date]);
 
     useEffect(() => {
         fetchTasks(props.id);
@@ -86,18 +98,12 @@ export default function TaskBox(props){
 
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
-            if (await isNewDay()) {
-                console.log("It's a new day!");
-                updateLastVisit();
-            }
-
             if (user) {
                 const userId = user.uid;
                 const userGeneralRef = ref(db, `users/${userId}/general`);
                 const userTodayRef = ref(db, `users/${userId}/today`);
 
                 const childChange = snapshot => {
-                    console.log("gseunioj")
                     fetchTasks()
                 }
 

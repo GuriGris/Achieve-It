@@ -21,13 +21,12 @@ import {
 } from "./../authStore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA8OnoSYuuvozhuvkzZgEf5dPKZgm0pnSw",
-  authDomain: "box-plan.firebaseapp.com",
-  databaseURL: "https://box-plan-default-rtdb.firebaseio.com",
-  projectId: "box-plan",
-  storageBucket: "box-plan.firebasestorage.app",
-  messagingSenderId: "1083451077750",
-  appId: "1:1083451077750:web:5b1ab7bf697ae10ddd9b57"
+  apiKey: "AIzaSyDSEejefa0bd2zqfHoxzCR9c1uibj-N34o",
+  authDomain: "theachieveit.firebaseapp.com",
+  projectId: "theachieveit",
+  storageBucket: "theachieveit.firebasestorage.app",
+  messagingSenderId: "185404356382",
+  appId: "1:185404356382:web:7ec611fb61d875bc10fb0f"
 };
 
 const googleProvider = new GoogleAuthProvider();
@@ -123,23 +122,38 @@ export const getFromDatabase = async () => {
 
 export const getLastVisit = async () => {
     const user = await getUser();
-    if (!user) {
-        console.warn("Can't get from The Database, user isn't logged in.");
-        return 0
-    }
+    if (!user) return;
+
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     const lastVisit = await get(lastVisitRef);
-    console.log(lastVisit, user.uid, lastVisitRef)
-    return lastVisit * 1000 * 60 * 60 * 24;
+    console.log(lastVisit.val(), user.uid)
+    return lastVisit.val();
 }
 
 export const updateLastVisit = async () => {
-    const date = Math.floor(new Date().getTime() / 1000 / 60 / 60 / 24)
+    const date = new Date().toDateString()
     const user = await getUser();
-    if (!user) {
-        console.warn("Can't get from The Database, user isn't logged in.");
-        return
-    }
+    if (!user) return;
+
     const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
     set(lastVisitRef, date)
+}
+
+export const isNewDay = async () => {
+    const user = await getUser();
+    if (!user) return false;
+
+    const today = new Date().toDateString()
+    const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
+    const snapshot = await get(lastVisitRef);
+    const lastVisit = snapshot.val();
+
+    console.log("hello", lastVisit)
+
+    if (!lastVisit || lastVisit !== today) {
+        await set(lastVisitRef, today);
+        return true; 
+    }
+    
+    return false; 
 }

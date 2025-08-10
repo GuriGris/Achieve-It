@@ -19,7 +19,7 @@ export default function Header(){
 
     return(
         <div className="header">
-            <h1><b>Achieve</b>-It</h1>
+            <h1>BoxPlan</h1>
         </div>
     )
 }
