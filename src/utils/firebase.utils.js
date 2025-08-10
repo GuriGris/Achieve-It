@@ -21,12 +21,13 @@ import {
 } from "./../authStore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDSEejefa0bd2zqfHoxzCR9c1uibj-N34o",
-  authDomain: "theachieveit.firebaseapp.com",
-  projectId: "theachieveit",
-  storageBucket: "theachieveit.firebasestorage.app",
-  messagingSenderId: "185404356382",
-  appId: "1:185404356382:web:7ec611fb61d875bc10fb0f"
+  apiKey: "AIzaSyA8OnoSYuuvozhuvkzZgEf5dPKZgm0pnSw",
+  authDomain: "box-plan.firebaseapp.com",
+  databaseURL: "https://box-plan-default-rtdb.firebaseio.com",
+  projectId: "box-plan",
+  storageBucket: "box-plan.firebasestorage.app",
+  messagingSenderId: "1083451077750",
+  appId: "1:1083451077750:web:5b1ab7bf697ae10ddd9b57"
 };
 
 const googleProvider = new GoogleAuthProvider();
