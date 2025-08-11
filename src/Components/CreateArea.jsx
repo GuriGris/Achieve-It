@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import TaskOptions from "./TaskOptions"
 import { setData, useData } from "../authStore"
-import { saveSingleToDatabase } from "../utils/firebase.utils"
+import { saveTaskToDatabase } from "../utils/firebase.utils"
 
 export default function CreateArea(props){
     const [name, setName] = useState("")
@@ -56,7 +56,7 @@ export default function CreateArea(props){
         }
         if (name.trim()) {
             setTasks([...tasks, newTask]);
-            saveSingleToDatabase(props.id, newTask)
+            saveTaskToDatabase(newTask)
         }
         setHours(0)
         setMinutes(0)

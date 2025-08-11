@@ -71,7 +71,7 @@ export const handleGoogleSignOut = async () => {
     }
 }
 
-export const saveSingleTaskToDatabase = async (task) => {
+export const saveTaskToDatabase = async (task) => {
     console.log(task)
     if (!await getUser()) {
         console.log("No user logged in.");

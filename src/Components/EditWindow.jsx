@@ -26,11 +26,7 @@ export default function EditWindow(props){
             updatedFields.reps = newCurrentReps;
         }
         
-        props.updateTask(props.task.id, updatedFields);
-        
-        if (newPosition !== props.task.position) {
-            props.updatePositions(props.task.id, props.task.position, newPosition, updatedFields);
-        }
+        props.updateTask(props.task.id, updatedFields, {from: props.task.position, to: newPosition});
        
        props.closeEdit();
    }
