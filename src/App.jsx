@@ -3,35 +3,40 @@ import {
 } from 'react';
 import './App.css';
 import Header from './Components/Header';
-import TaskBox from './Components/TaskBox';
-import UserAuth from './Components/UserAuth';
+import Home from './routes/Home';
+import SignIn from './routes/SignIn';
+import SignUp from './routes/SignUp';
+import PageNotFound from "./routes/PageNotFound"
 import {
+    auth,
     initAuthListener
 } from './utils/firebase.utils';
+import { onAuthStateChanged } from 'firebase/auth';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+export const router = createBrowserRouter([
+    {path: "/", element: <Home />},
+    {path: "/signin", element: <SignIn />},
+    {path: "/signup", element: <SignUp />},
+    {path: "*", element: <PageNotFound />}
+])
 
 function App() {
     useEffect(() => {
         initAuthListener();
+
+        onAuthStateChanged(auth, user => {
+            if (router.window.location.pathname !== "/signup") {
+                router.navigate(user ? "/" : "/signin")
+            }
+        })
     }, []);
 
   return (
-    <>
-        <UserAuth />
-        <Header />
-        <div className='container'>
-            <TaskBox 
-                id = {1}
-                name = "Daily Box"
-                infoText = "This box is for tasks you have to do every day"
-            />
-            <TaskBox 
-                id = {2}
-                name = "Today's Box"
-                infoText = "This box is for tasks that you have to do today"
-            />
-        </div>
-        
-    </>
+    <div className="content">
+        <Header />    
+        <RouterProvider router={router} />
+    </div>
   );
 }
 

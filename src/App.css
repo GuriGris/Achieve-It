@@ -18,6 +18,7 @@
   --header-margin-bottom: 6.25rem;
   
   /* Font Sizes */
+  --font-size-xs: 0.85rem;
   --font-size-small: 0.9375rem;
   --font-size-medium: 1.375rem;
   --font-size-large: 1.5625rem;
@@ -26,6 +27,9 @@
   --font-size-button: 1.125rem;
   --font-size-heading: 1.375rem;
   --font-size-header: 2rem;
+
+  /* Fonts */
+  --architects-daughter: "Architects Daughter", cursive;
   
   /* Spacing */
   --space-xs: 0.3125rem;
@@ -98,7 +102,7 @@ html{
 }
 
 * {
-  user-select: none;
+  /* user-select: none; */ /* <-- Æsj */
 }
 
 body{
@@ -123,23 +127,40 @@ button{
 .header{
   z-index: 999;
   display: flex;
-  flex-direction: column;
+  justify-content: start;
   align-items: center;
-  justify-content: center;
   color: rgb(252, 252, 252);
   background-color: var(--color-primary);
   width: 100vw;
   height: var(--header-height);
-  margin-bottom: var(--header-margin-bottom);
   box-shadow: var(--shadow-header);
   position: fixed;
   top: 0;
 }
 
+.headerTitle {
+    width: 60%;
+    margin-left: 20%;
+    text-align: center;
+}
+
+.headerLogoutButton {
+    width: calc(20% - 20px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    margin-right: 20px;
+}
+.headerLogoutButton > p {
+    margin: 10px 0 0 0;
+}
+
 h1{
   margin: 0;
   font-weight: 500;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   font-size: var(--font-size-header);
 }
 
@@ -147,8 +168,79 @@ h1 strong{
   font-size: var(--font-size-xl);
 }
 
+.content {
+    padding-top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+}
+
+.signin-screen {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height) * 2 - 32px);
+    margin-bottom: calc(var(--header-height) + 32px);
+}
+
+.signin-screen p {
+    /* font-weight: 600; */
+    font-size: var(--font-size-medium);
+    font-family: var(--architects-daughter);
+    margin: 0;
+}
+
+.signin-screen > p {
+    font-size: var(--font-size-xl);
+}
+
+.signin-options-list {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    height: fit-content;
+}
+
+.separator {
+    width: 100%;
+    margin: 24px 0;
+    border-bottom: #5f6f7f solid 1px;
+}
+
+.manualSignInForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 320px;
+}
+
+.manualSignInForm > input {
+    height: calc(48px - 15px * 2);
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: var(--shadow-light);
+}
+
+.createManualUser {
+    display: flex;
+    margin-top: 25px;
+    gap: 5px;
+}
+
+.createManualUser * {
+    font-size: 16px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    letter-spacing: -.5px;
+    text-decoration: none;
+}
+
+.createManualUser a p {
+    color: #52a8ff;
+}
+
 .container{
-  margin: calc(var(--header-height) + 5rem) auto 0 auto;
+  margin: 5rem auto 0 auto;
   display: flex;
   justify-content: space-between;
   width: var(--container-width);
@@ -181,7 +273,7 @@ h1 strong{
   box-shadow: var(--shadow-medium);
   font-weight: 400;
   font-size: var(--font-size-heading);
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
 }
 
 .infoText{
@@ -230,7 +322,7 @@ h1 strong{
   padding: 0;
   background-color: transparent;
   border: none;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   text-align: center;
 }
 
@@ -261,7 +353,7 @@ input::-webkit-inner-spin-button {
   border-radius: var(--radius-medium);
   border: var(--color-black) var(--border-md) solid;
   transition: all var(--animation-fast);
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
 }
 
 .taskOptions{
@@ -287,7 +379,7 @@ input::-webkit-inner-spin-button {
   height: 65%;
   width: 100%;
   margin: 0;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   background-color: #fffbee;
   font-size: var(--font-size-medium);
 }
@@ -324,7 +416,7 @@ input::-webkit-inner-spin-button {
   height: 100%;
   width: 20%;
   font-size: var(--font-size-button);
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
 }
 
 .createArea .addButton:active{
@@ -378,7 +470,7 @@ input::-webkit-inner-spin-button {
 
 .task{
   position: relative;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   width: var(--task-width);
   height: var(--task-height);
   display: grid;
@@ -412,7 +504,7 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
   display: flex;
   align-items: center;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   font-size: var(--font-size-xl);
   width: 100%;
   margin: 0;
@@ -552,7 +644,7 @@ input::-webkit-inner-spin-button {
 .doneHeading{
   display: flex;
   justify-content: center;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   width: 40%;
   background-color: var(--color-done);
   border-radius: var(--radius-large);
@@ -583,7 +675,7 @@ input::-webkit-inner-spin-button {
   margin-left: 10%;
   border: solid var(--color-black) var(--border-md);
   border-radius: var(--radius-small);
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   font-size: var(--font-size-small);
 }
 
@@ -706,7 +798,7 @@ body:has(.modalEdit) {
   width: 50%;
   height: var(--label-height);
   margin: 0;
-  font-family: "Architects Daughter", cursive;
+  font-family: var(--architects-daughter);
   background-color: var(--color-orange-dark);
   border-radius: var(--radius-large);
   box-shadow: var(--shadow-light);

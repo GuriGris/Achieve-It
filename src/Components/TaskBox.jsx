@@ -7,9 +7,7 @@ import {
     auth,
     db,
     getFromDatabase,
-    saveToDatabase,
     deleteFromDatabase,
-    updateLastVisit,
     isNewDay,
     saveTaskToDatabase
 } from "../utils/firebase.utils";
@@ -17,7 +15,6 @@ import {
     onAuthStateChanged
 } from "firebase/auth";
 import {
-    getUser,
     setAuthData,
     setData,
     useData,
@@ -196,7 +193,7 @@ export default function TaskBox(props){
     const completed = currentTasks ? currentTasks.filter(task => task.completed) : [];
 
     useEffect(() => {
-        if (currentTasks.length == 0){
+        if (currentTasks.length === 0){
             setEditingState(false)
         }
     }, [currentTasks]);

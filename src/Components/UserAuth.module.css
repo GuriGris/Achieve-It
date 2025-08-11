@@ -15,7 +15,7 @@
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-size: 16px;
 }
@@ -62,6 +62,54 @@
 
 .logoutButton {
     transition: all ease-in-out .5s;
+    background-color: #ff4d4d;
+    margin: 5px 0 10px 0;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.signInButton {
+    --padding-horizontal: 14px;
+    max-width: 320px;
+    height: 48px;
+    padding: 0 var(--padding-horizontal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    color: #000;
+    border-radius: 10px;
+    box-shadow: var(--shadow-light);
+    cursor: pointer;
+}
+
+.signInButton.secondary {
+    /* height: 44px;
+    width: calc(100% - var(--padding-horizontal) * 2 - 4px);
+    border: 2px #424242 solid; */
+    background-color: #f9d978;
+    color: #0f0f0f;
+    box-shadow: var(--shadow-medium);
+}
+
+.signInServiceLogo {
+    height: 20px;
+    width: 20px;
+}
+
+.signInServiceName {
+    padding: 0 6px;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px !important;
+}
+
+/* .logoutButton {
+    transition: all ease-in-out .5s;
     height: 0;
     visibility: hidden;
     margin-top: 10px;
@@ -88,19 +136,4 @@
     padding: 10px 20px;
     visibility: visible;
     height: fit-content !important;
-}
-
-/* .profileSettings > * {
-    animation: fadeIn 0.3s ease-in-out;
-} */
-
-/* @keyframes fadeIn {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 } */

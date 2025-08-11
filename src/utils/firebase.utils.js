@@ -19,6 +19,9 @@ import {
     getUser,
     setAuthData,
 } from "./../authStore"
+import {
+    router
+} from "../App";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA8OnoSYuuvozhuvkzZgEf5dPKZgm0pnSw",
@@ -56,6 +59,7 @@ export const signInWithGooglePopup = async () => {
     try {
         const { user } = await signInWithPopup(auth, googleProvider);
         setAuthData(user, await user.getIdToken());
+        router.navigate("/")
         return user;
     } catch (error) {
         console.error('Sign-in error:', error);
@@ -159,16 +163,20 @@ export const isNewDay = async (authUser) => {
     const user = await getUser() || authUser;
     if (!user) return false
 
-    const today = new Date().toDateString();
-    const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
-    const snapshot = await get(lastVisitRef);
+    try {
+        const today = new Date().toDateString();
+        const lastVisitRef = ref(db, `users/${user.uid}/lastVisit`);
+        const snapshot = await get(lastVisitRef);
 
-    // const localLastVisit = localStorage.getItem("lastVisit");
-    const lastVisit = snapshot.val();
+        // const localLastVisit = localStorage.getItem("lastVisit");
+        const lastVisit = snapshot.val();
 
-    if (!lastVisit || lastVisit !== today) {
-        await set(lastVisitRef, today);
-        return true
+        if (!lastVisit || lastVisit !== today) {
+            await set(lastVisitRef, today);
+            return true
+        }
+    } catch (err) {
+        console.log("Failed to get data from database.", err)
     }
     
     return false
