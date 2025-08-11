@@ -71,45 +71,46 @@ export const handleGoogleSignOut = async () => {
     }
 }
 
-export const saveSingleToDatabase = async (id, data) => {
-    console.log("singlesave")
+export const saveSingleTaskToDatabase = async (task) => {
+    console.log(task)
+    if (!await getUser()) {
+        console.log("No user logged in.");
+        return
+    }
+
+
+    try {
+        const user = await getUser();
+        const taskRef = ref(db, `users/${user.uid}/tasks/${task.id}`);
+        set(taskRef, task);
+    } catch (error) {
+        console.warn("Error saving single to db.\nError:", error);
+    }
+}
+
+export const saveToDatabase = async (data) => {
     if (!await getUser()) {
         console.log("No user logged in.");
         return
     }
 
     try {
-        if (data.type != (id === 1 ? "general" : "today")) {
-            console.log(`Wrong dbRefField, got ${data.type}, but should be ${id === 1 ? "general" : "today"}`)
-            return;
-        }
+        console.log(data)
         const user = await getUser();
-        const taskRef = ref(db, `users/${user.uid}/${id === 1 ? "general" : "today"}/${data.id}`);
-        set(taskRef, data);
+        const tasksRef = ref(db, `users/${user.uid}/tasks`);
+        
+        const dataObj = {}
+        data.forEach(task => {
+            dataObj[task.id] = task;
+        });
+
+        set(tasksRef, dataObj);
     } catch (error) {
         console.warn("Error saving to db.\nError:", error);
     }
 }
 
-export const saveToDatabase = async (id, data) => {
-    console.log("multisave")
-    if (!await getUser()) {
-        console.log("No user logged in.");
-        return
-    }
-
-    console.log(id, data)
-
-    try {
-        const user = await getUser();
-        const taskRef = ref(db, `users/${user.uid}/${id === 1 ? "general" : "today"}`);
-        set(taskRef, data);
-    } catch (error) {
-        console.warn("Error saving to db.\nError:", error);
-    }
-}
-
-export const deleteFromDatabase = async (listId, taskId) => {
+export const deleteFromDatabase = async (taskId) => {
     if (!await getUser()) {
         console.log("No user logged in.");
         return
@@ -117,7 +118,7 @@ export const deleteFromDatabase = async (listId, taskId) => {
 
     try {
         const user = await getUser();
-        const taskRef = ref(db, `users/${user.uid}/${listId === 1 ? "general" : "today"}/${taskId}`);
+        const taskRef = ref(db, `users/${user.uid}/tasks/${taskId}`);
         remove(taskRef);
     } catch (error) {
         console.warn("Error deleting to db.\nError:", error);
@@ -133,8 +134,11 @@ export const getFromDatabase = async () => {
     try {
         const user = await getUser();
         const tasksRef = ref(db, `users/${user.uid}`);
-        const snapshotVal = (await get(tasksRef))?.val();
-        return [snapshotVal?.general, snapshotVal?.today]
+        const snapshot = await get(tasksRef);
+        
+        let tasks = Object.values(snapshot.val()?.tasks || {});
+
+        return tasks || [];
     } catch (error) {
         console.warn("User isn't logged in.\nError:", error);
     }
