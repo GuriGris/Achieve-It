@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { GoogleLoguotButton } from "./UserAuth";
 
 export default function Header(){
-    const [displayName, setDisplayName] = useState("");
+    const [user, setUser] = useState("");
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (authUser) => {
             if (authUser) {
-                setDisplayName(authUser.displayName);
+                setUser(authUser);
             } else {
-                setDisplayName("");
+                setUser("");
             }
         });
 
@@ -21,9 +21,9 @@ export default function Header(){
     return(
         <div className="header">
             <h1 className="headerTitle">BoxPlan</h1>
-            {displayName.length > 0 &&
+            {(user.displayName || user.email) &&
                 <div className="headerLogoutButton">
-                    <p>{displayName}</p>
+                    <p>{(user.email && user.displayName) || user.email}</p>
                     <GoogleLoguotButton />
                 </div>
             }

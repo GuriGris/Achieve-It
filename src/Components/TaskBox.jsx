@@ -65,7 +65,9 @@ export default function TaskBox(props){
         fetchTasks(props.id);
 
         const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+
             if (authUser) {
+                console.log(authUser)
                 console.log(authUser && "Logged in, fetching data from database");
                 setAuthData(authUser, await authUser.getIdToken());
                 fetchTasks();
@@ -78,6 +80,7 @@ export default function TaskBox(props){
 
     useEffect(() => {
         onAuthStateChanged(auth, async (user) => {
+
             checkForNewDay(user);
 
             if (user) {
@@ -107,8 +110,7 @@ export default function TaskBox(props){
         )
     }
 
-    function resetTaskCompletion(currentTasks) {    
-        alert("New day, resetting tasks")            
+    function resetTaskCompletion(currentTasks) {
         currentTasks.forEach(task => {
             updateTask(task.id, {
                 currenTime: task.startTime || 0, 

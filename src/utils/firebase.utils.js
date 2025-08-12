@@ -13,7 +13,10 @@ import {
     getAuth,
     signInWithPopup,
     GoogleAuthProvider,
-    onAuthStateChanged
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
 } from "firebase/auth";
 import {
     getUser,
@@ -37,6 +40,7 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
     prompt: "select_account"
 })
+googleProvider.addScope('email');
 
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
@@ -55,20 +59,57 @@ export const initAuthListener = () => {
     });
 };
 
-export const signInWithGooglePopup = async () => {
+export const signUpWithPassword = async (email, password) => {
     try {
-        const { user } = await signInWithPopup(auth, googleProvider);
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
         setAuthData(user, await user.getIdToken());
-        router.navigate("/")
+        router.navigate("/");
+        return user;
+
+    } catch (error) {
+        console.log(error.code)
+        if (error.code === "auth/email-already-in-use") {
+            return "Email already in use, maybe with other sign in method.";
+        }
+        return "Something went wrong, please try again";
+    }
+};
+
+export const signInWithPassword = async (email, password) => {
+    try {
+        const { user } = await signInWithEmailAndPassword(auth, email, password);
+        setAuthData(user, await user.getIdToken());
+        router.navigate("/");
         return user;
     } catch (error) {
-        console.error('Sign-in error:', error);
+        if (error.code === "auth/invalid-credential") {
+            return "Invalid email or password";
+        }
+        return "Something went wrong, please try again";
     }
+
 }
 
-export const handleGoogleSignOut = async () => {
+export const signInWithGooglePopup = async () => {
+  try {
+    const { user } = await signInWithPopup(auth, googleProvider);
+    setAuthData(user, await user.getIdToken());
+    router.navigate("/");
+    return user;
+  } catch (error) {
+    console.error('Sign-in error:', error);
+  }
+};
+
+export const handleSignOut = async () => {
     try {
         await auth.signOut();
+        setAuthData(null, null);
+    } catch (error) {
+        console.error("Sign-out error:", error);
+    }
+    try {
+        await signOut(auth);
         setAuthData(null, null);
     } catch (error) {
         console.error("Sign-out error:", error);
@@ -76,7 +117,6 @@ export const handleGoogleSignOut = async () => {
 }
 
 export const saveTaskToDatabase = async (task) => {
-    console.log(task)
     if (!await getUser()) {
         console.log("No user logged in.");
         return
@@ -99,7 +139,6 @@ export const saveToDatabase = async (data) => {
     }
 
     try {
-        console.log(data)
         const user = await getUser();
         const tasksRef = ref(db, `users/${user.uid}/tasks`);
         
@@ -144,7 +183,7 @@ export const getFromDatabase = async () => {
 
         return tasks || [];
     } catch (error) {
-        console.warn("User isn't logged in.\nError:", error);
+        console.warn("No data found on user.\nError:", error);
     }
 }
 

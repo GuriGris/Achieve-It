@@ -2,7 +2,7 @@ import styles from "./UserAuth.module.css"
 import { onAuthStateChanged } from "firebase/auth";
 import { getUser } from '../authStore';
 import { useState, useEffect } from 'react';
-import { auth, signInWithGooglePopup, handleGoogleSignOut } from '../utils/firebase.utils';
+import { auth, signInWithGooglePopup, handleSignOut, signUpWithPassword, signInWithPassword } from '../utils/firebase.utils';
 
 export function SignInButton(props) {
     return (
@@ -20,14 +20,22 @@ export function ManualSignX({ x }) {
     const [manualEmail, setManualEmail] = useState("");
     const [manualPassword, setManualPassword] = useState("");
     const [showPasswordBox, setShowPasswordBox] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const tryShowPasswordBox = () => {
         const emailInput = document.getElementById("manualSignInEmail");
-        console.log(emailInput)
         if (emailInput.checkValidity()) {
             setShowPasswordBox(true)
         } else {
             emailInput.reportValidity();
+        }
+    }
+
+    const formSubmit = async () => {
+        if (x === "up") {
+            setErrorMessage(await signUpWithPassword(manualEmail, manualPassword));
+        } else {
+            setErrorMessage(await signInWithPassword(manualEmail, manualPassword));
         }
     }
 
@@ -38,8 +46,11 @@ export function ManualSignX({ x }) {
             {showPasswordBox && 
                 <>
                     <input type="password" autoComplete={x === "in" ? "current-password" : "new-password"} id="manualSignInPassword" onChange={e => setManualPassword(e.target.value)} value={manualPassword} placeholder="Password" required />
-                    <SignInButton value={x === "in" ? "Sign in" : "Sign up"} onClick={() => document.getElementById("manualUserForm")?.submit()} />
+                    <SignInButton value={x === "in" ? "Sign in" : "Sign up"} onClick={formSubmit} />
                 </>
+            }
+            {errorMessage &&
+                <p style={{color: "red", textAlign: "center"}}>{errorMessage}</p>
             }
         </form>
     )
@@ -58,7 +69,7 @@ export function GoogleLoginButton() {
 
 export function GoogleLoguotButton() {
     return (
-        <button className={styles.logoutButton} onClick={handleGoogleSignOut}>
+        <button className={styles.logoutButton} onClick={handleSignOut}>
             Logg ut
         </button>
     );
