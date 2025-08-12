@@ -67,7 +67,6 @@ export default function TaskBox(props){
         const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
 
             if (authUser) {
-                console.log(authUser)
                 console.log(authUser && "Logged in, fetching data from database");
                 setAuthData(authUser, await authUser.getIdToken());
                 fetchTasks();
