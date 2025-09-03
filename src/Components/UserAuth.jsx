@@ -5,8 +5,33 @@ import { useState, useEffect } from 'react';
 import { auth, signInWithGooglePopup, handleSignOut, signUpWithPassword, signInWithPassword } from '../utils/firebase.utils';
 
 export function SignInButton(props) {
+    const hoverin = e => {
+        e.target.classList.add("signinBtnHover");
+    }
+
+    const hoverout = e => {
+        e.target.classList.remove("signinBtnHover");
+        e.target.classList.remove("signinBtnDown");
+    }
+
+    const pointerdown = e => {
+        e.target.classList.add("signinBtnDown");
+    }
+
+    const pointerup = e => {
+        e.target.classList.remove("signinBtnDown");
+    }
+
     return (
-        <div className={`${styles.signInButton} ${[true, "true"].includes(props.secondary) && styles.secondary}`} onClick={props.onClick}>
+        <div
+            className={`${styles.signInButton} ${[true, "true"].includes(props.secondary) && styles.secondary}`}
+            // onClick={props.onClick}
+            onMouseEnter={hoverin}
+            onMouseLeave={hoverout}
+            onPointerDown={pointerdown}
+            onPointerUp={pointerup}
+            style={props.secondary ? null : {"backgroundColor": props.bgcolor, "color": props.fntcolor}}
+        >
             {props?.imgSrc && <img src={props?.imgSrc} alt="SignIn-service logo" className={styles.signInServiceLogo} />}
             <p className={styles.signInServiceName}>
                 {!props?.value && `Sign in with ${props.name || "{service name}"}`}
@@ -26,6 +51,7 @@ export function ManualSignX({ x }) {
         const emailInput = document.getElementById("manualSignInEmail");
         if (emailInput.checkValidity()) {
             setShowPasswordBox(true)
+            // document.getElementById("manualSignInPassword").focus();
         } else {
             emailInput.reportValidity();
         }
@@ -39,14 +65,32 @@ export function ManualSignX({ x }) {
         }
     }
 
+    const vaildateSubmit = e => {
+        if (!showPasswordBox) {
+            e.preventDefault();
+            tryShowPasswordBox();
+        }
+    }
+
     return (
-        <form className="manualSignInForm" id="manualUserForm">
+        <form className="manualSignInForm" id="manualUserForm" onSubmit={vaildateSubmit}>
             <input type="email" autoComplete="email" id="manualSignInEmail" onChange={e => setManualEmail(e.target.value)} value={manualEmail} placeholder="Email" required />
-            {!showPasswordBox && <SignInButton onClick={tryShowPasswordBox} value="Continue with Email." />}
-            {showPasswordBox && 
+            {!showPasswordBox && <SignInButton imgSrc="/images/mail.svg" onClick={tryShowPasswordBox} value="Continue with Email." />}
+            {showPasswordBox &&
                 <>
-                    <input type="password" autoComplete={x === "in" ? "current-password" : "new-password"} id="manualSignInPassword" onChange={e => setManualPassword(e.target.value)} value={manualPassword} placeholder="Password" required />
-                    <SignInButton value={x === "in" ? "Sign in" : "Sign up"} onClick={formSubmit} />
+                    <input
+                        type="password"
+                        autoComplete={x === "in" ? "current-password" : "new-password"}
+                        id="manualSignInPassword"
+                        onChange={e => setManualPassword(e.target.value)}
+                        value={manualPassword}
+                        placeholder="Password"
+                        required
+                    />
+                    <SignInButton
+                        value={x === "in" ? "Sign in" : "Sign up"}
+                        onClick={formSubmit}
+                    />
                 </>
             }
             {errorMessage &&

@@ -78,6 +78,7 @@
     max-width: 320px;
     height: 48px;
     padding: 0 var(--padding-horizontal);
+    margin: 5px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -86,6 +87,10 @@
     border-radius: 10px;
     box-shadow: var(--shadow-light);
     cursor: pointer;
+}
+
+.signInButton * {
+    pointer-events: none;
 }
 
 .signInButton.secondary {

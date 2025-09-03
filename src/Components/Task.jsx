@@ -108,7 +108,7 @@ export default function Task(props){
                             </div>
                             </>
                         : props.task.startReps >= 2 ?
-                            <p className="reps" onClick={removeRep}>{props.task.reps > 0 ? props.task.reps + "x" : ""}</p>
+                            <p className="reps" onClick={removeRep}>{props.task.reps > 0 ? props.task.reps + " x" : ""}</p>
                         :
                         null}
                     </div>
