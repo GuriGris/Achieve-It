@@ -37,6 +37,14 @@
     width: 50px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    position: relative;
+}
+
+.profileContainer > p {
+    position: absolute;
+    left: 0;
+    transform: translateX(-100%);
+    padding-right: 10px;
 }
 
 .profileContainer:hover {
@@ -113,32 +121,39 @@
     font-size: 16px !important;
 }
 
-/* .logoutButton {
-    transition: all ease-in-out .5s;
-    height: 0;
-    visibility: hidden;
+.logoutContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.logoutButton {
     margin-top: 10px;
-    background-color: #ff4d4d;
-    color: #ffffff;
+    background-color: #faf7f7;
+    color: black;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
-    padding: 0 20px;
-    overflow: hidden;
 }
 
-.profileContainer, .profileContainer * {
-    transition: all ease-in-out .5s;
+.profileSettings {
+    display: flex;
+    flex-direction: column;
 }
 
-.profileActive > .profileContainer, .profileActive > .profileContainer * {
-    height: 5px !important;
+.profileSettings > * {
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-.profileActive > .profileSettings button {
-    padding: 10px 20px;
-    visibility: visible;
-    height: fit-content !important;
-} */
+@keyframes fadeIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

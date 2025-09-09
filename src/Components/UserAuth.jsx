@@ -1,8 +1,13 @@
 import styles from "./UserAuth.module.css"
-import { onAuthStateChanged } from "firebase/auth";
-import { getUser } from '../authStore';
-import { useState, useEffect } from 'react';
-import { auth, signInWithGooglePopup, handleSignOut, signUpWithPassword, signInWithPassword } from '../utils/firebase.utils';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { handleSignOut, signUpWithPassword, signInWithPassword, deleteProfile } from '../utils/firebase.utils';
+import {
+    getAuth,
+    onAuthStateChanged,
+} from "firebase/auth";
+import {
+    getUser,
+} from '../authStore';
 
 export function SignInButton(props) {
     const hoverin = e => {
@@ -25,7 +30,7 @@ export function SignInButton(props) {
     return (
         <div
             className={`${styles.signInButton} ${[true, "true"].includes(props.secondary) && styles.secondary}`}
-            // onClick={props.onClick}
+            onClick={props.onClick}
             onMouseEnter={hoverin}
             onMouseLeave={hoverout}
             onPointerDown={pointerdown}
@@ -50,8 +55,7 @@ export function ManualSignX({ x }) {
     const tryShowPasswordBox = () => {
         const emailInput = document.getElementById("manualSignInEmail");
         if (emailInput.checkValidity()) {
-            setShowPasswordBox(true)
-            // document.getElementById("manualSignInPassword").focus();
+            setShowPasswordBox(true);
         } else {
             emailInput.reportValidity();
         }
@@ -69,8 +73,18 @@ export function ManualSignX({ x }) {
         if (!showPasswordBox) {
             e.preventDefault();
             tryShowPasswordBox();
+        } else {
+          formSubmit();
         }
     }
+
+    const passwordInputRef = useRef(null);
+
+    useLayoutEffect(() => {
+    if (showPasswordBox) {
+        passwordInputRef.current?.focus();
+    }
+    }, [showPasswordBox]);
 
     return (
         <form className="manualSignInForm" id="manualUserForm" onSubmit={vaildateSubmit}>
@@ -86,10 +100,11 @@ export function ManualSignX({ x }) {
                         value={manualPassword}
                         placeholder="Password"
                         required
+                        ref={passwordInputRef}
                     />
                     <SignInButton
                         value={x === "in" ? "Sign in" : "Sign up"}
-                        onClick={formSubmit}
+                        onClick={vaildateSubmit}
                     />
                 </>
             }
@@ -100,46 +115,56 @@ export function ManualSignX({ x }) {
     )
 }
 
-export function GoogleLoginButton() {
-    return (
-        <div className={styles.loginContainer}>
-            <button id='google-login-btn' className={styles.googleButton} onClick={signInWithGooglePopup}>
-                <img src="/Images/google_logo.svg" alt="Google Logo" />
-                Logg inn med Google
-            </button>
-        </div>
-    );
-}
-
 export function GoogleLoguotButton() {
     return (
         <button className={styles.logoutButton} onClick={handleSignOut}>
-            Logg ut
+            Log out
         </button>
     );
 }
 
 function Profile() {
     const [clickedProfile, setClickedProfile] = useState(false);
+    
+    const tryDeleteProfile = () => {
+        const confirmDelete = window.confirm(`Do you really want to delete your profile: {${getUser().displayName}}?\nAll your data and login info will be lost.`);
+
+        if (confirmDelete) {
+            deleteProfile(getUser());
+        }
+    }
+
+    // document.addEventListener("click", e => {
+    //     console.log(e.target?.parentNode?.classList.includes(styles.profileContainer))
+    //     if (!e.target?.parentNode?.classList.includes(styles.profileContainer)) {
+    //         setClickedProfile(false);
+    //     }
+    // })
 
     return (
-        <div className={`${styles.rightAlign} ${clickedProfile && styles.profileActive}`}>
+        <div className={styles.logoutContainer}>
             <div className={styles.profileContainer} onClick={() => {setClickedProfile(!clickedProfile)}}>
-                <img src={getUser()?.photoURL} alt="Profileimage" className={styles.profileImage} />
+                <p>{getUser()?.displayName}</p>
+                <img src={getUser()?.photoURL || "Images/profile.svg"} alt="Profile" className={styles.profileImage} />
             </div>
-            <div className={styles.profileSettings}>
-                <GoogleLoguotButton />
-            </div>
+            {clickedProfile &&
+                <div className={styles.profileSettings}>
+                    <button className={styles.logoutButton} style={{backgroundColor: "#f32222ff", color: "white"}} onClick={tryDeleteProfile}>
+                        Delete profile
+                    </button>
+                    <GoogleLoguotButton />
+                </div>
+            }
         </div>
     );
 }
 
 function EmptyProfile() {
     return (
-        <div className={styles.rightAlign}>
+        <div className={styles.logoutContainer}>
             <div className={styles.profileContainer}>
                 <img
-                    src="/Images/profile.svg"
+                    src="Images/profile.svg"
                     alt="Profile"
                     className={`${styles.profileImage} ${styles.emptyProfile}`}
                 />
@@ -148,11 +173,12 @@ function EmptyProfile() {
     );
 }
 
-export default function UserAuth() {
+export function UserAuth() {
     const [user, setUser] = useState(false);
     const [noUser, setNoUser] = useState(false);
 
     useEffect(() => {
+        const auth = getAuth();
         const unsubscribe = onAuthStateChanged(auth, (authUser) => {
             if (authUser) {
                 setUser(authUser);
@@ -176,7 +202,7 @@ export default function UserAuth() {
             :
                 (
                     noUser ? 
-                        <GoogleLoginButton />
+                        <SignInButton />
                     :
                         <EmptyProfile />
                 )

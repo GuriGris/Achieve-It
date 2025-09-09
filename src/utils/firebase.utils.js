@@ -17,6 +17,7 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
+    deleteUser,
 } from "firebase/auth";
 import {
     getUser,
@@ -219,4 +220,11 @@ export const isNewDay = async (authUser) => {
     }
     
     return false
+}
+
+export const deleteProfile = (user) => {
+    const userDataRef = ref(db, `users/${user.uid}`);
+    remove(userDataRef);
+    deleteUser(user);
+    router.navigate("/signin");
 }

@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase.utils";
 import { useEffect, useState } from "react";
-import { GoogleLoguotButton } from "./UserAuth";
+import { GoogleLoguotButton, UserAuth } from "./UserAuth";
 
 export default function Header(){
     const [user, setUser] = useState("");
@@ -23,8 +23,9 @@ export default function Header(){
             <h1 className="headerTitle">BoxPlan</h1>
             {(user.displayName || user.email) &&
                 <div className="headerLogoutButton">
-                    <p>{(user.email && user.displayName) || user.email}</p>
-                    <GoogleLoguotButton />
+                    {/* <p>{(user.email && user.displayName) || user.email}</p>
+                    <GoogleLoguotButton /> */}
+                    <UserAuth />
                 </div>
             }
         </div>
