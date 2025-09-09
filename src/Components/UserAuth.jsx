@@ -75,7 +75,7 @@ export function ManualSignX({ x }) {
     return (
         <form className="manualSignInForm" id="manualUserForm" onSubmit={vaildateSubmit}>
             <input type="email" autoComplete="email" id="manualSignInEmail" onChange={e => setManualEmail(e.target.value)} value={manualEmail} placeholder="Email" required />
-            {!showPasswordBox && <SignInButton imgSrc="/images/mail.svg" onClick={tryShowPasswordBox} value="Continue with Email." />}
+            {!showPasswordBox && <SignInButton imgSrc="/Images/mail.svg" onClick={tryShowPasswordBox} value="Continue with Email." />}
             {showPasswordBox &&
                 <>
                     <input
