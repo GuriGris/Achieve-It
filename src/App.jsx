@@ -2,7 +2,6 @@ import {
     useEffect
 } from 'react';
 import './App.css';
-import Header from './Components/Header';
 import Home from './routes/Home';
 import SignIn from './routes/SignIn';
 import SignUp from './routes/SignUp';
@@ -21,20 +20,23 @@ export const router = createBrowserRouter([
     {path: "*", element: <PageNotFound />}
 ])
 
+const requireSignin = true;
+
 function App() {
     useEffect(() => {
         initAuthListener();
 
         onAuthStateChanged(auth, user => {
-            if (router.window.location.pathname !== "/signup") {
+            if (router.window.location.pathname !== "/signup" && requireSignin) {
                 router.navigate(user ? "/" : "/signin")
+            } else if (!requireSignin) {
+                router.navigate(user ? "/" : "/")
             }
         })
     }, []);
 
   return (
     <div className="content">
-        <Header />    
         <RouterProvider router={router} />
     </div>
   );

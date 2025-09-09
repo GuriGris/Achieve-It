@@ -68,6 +68,7 @@
   --animation-slow: 0.5s;
   
   /* Box Shadows */
+  --shadow-suprelight: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
   --shadow-light: 1px 2px 5px 0px rgba(0, 0, 0, 0.3);
   --shadow-medium: 2px 4px 5px 0 rgba(0, 0, 0, 0.3);
   --shadow-heavy: 4px 6px 5px 0px rgba(0, 0, 0, 0.3);
@@ -171,16 +172,32 @@ h1 strong{
 .content {
     padding-top: var(--header-height);
     height: calc(100vh - var(--header-height));
+    display: flex;
+    align-items: center;
 }
 
 .signin-screen {
     display: flex;
     gap: 32px;
+    width: fit-content;
+    height: fit-content;
+    padding: 25px;
+    background-color: #faf7f7;
+    box-shadow: 5px 6px 5px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    margin: 0 auto var(--header-height) auto;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: calc(100vh - var(--header-height) * 2 - 32px);
-    margin-bottom: calc(var(--header-height) + 32px);
+}
+
+.signin-screen > p { /* Signin Header "Log in to BoxPlan" */
+    padding: 5px 10px;
+    background-color: #ffdd8e;
+    max-width: 320px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 3px 2px 7px 0 rgba(0, 0, 0, 0.1);
 }
 
 .signin-screen p {
@@ -210,21 +227,32 @@ h1 strong{
 .manualSignInForm {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     max-width: 320px;
 }
 
 .manualSignInForm > input {
     height: calc(48px - 15px * 2);
-    padding: 15px;
+    padding: 14px;
     border-radius: 10px;
-    border: none;
+    border: 1px solid black;
     box-shadow: var(--shadow-light);
+}
+
+.signinBtnDown {
+    position: relative;
+    top: 1px;
+    left: 2px;
+    box-shadow: var(--shadow-suprelight) !important;
+    /* transition: box-shadow 0; */
+}
+
+.signinBtnHover {
+    background-color: #ffeaa7 !important;
 }
 
 .createManualUser {
     display: flex;
-    margin-top: 25px;
     gap: 5px;
 }
 
