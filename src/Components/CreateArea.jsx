@@ -5,16 +5,14 @@ import { saveTaskToDatabase } from "../utils/firebase.utils"
 
 export default function CreateArea(props){
     const [name, setName] = useState("")
-    const [minutes, setMinutes] = useState(0)
-    const [hours, setHours] = useState(0)
-    const [seconds, setSeconds] = useState(0)
+    const [time, setTime] = useState({hours: 0, minutes: 0, seconds: 0})
     const [mode, setMode] = useState("Time")
     const [reps, setReps] = useState(2)
 
     const tasks = useData();
     const setTasks = setData;
 
-    const timeDisplay = `${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    const timeDisplay = `${time.hours < 10 ? "0" : ""}${time.hours}:${time.minutes < 10 ? "0" : ""}${time.minutes}`;
     const repsDisplay = (
         <input 
             type="number" 
@@ -41,7 +39,7 @@ export default function CreateArea(props){
             task.type === (props.id === 1 ? "general" : "today")
         );
 
-        const startTime = props.timeToSeconds(hours, minutes, seconds)
+        const startTime = props.timeToSeconds(time.hours, time.minutes, time.seconds)
         const newTask = {
             id: Date.now() + Math.floor(Math.random() * 10000),
             name: name,
@@ -58,28 +56,27 @@ export default function CreateArea(props){
             setTasks([...tasks, newTask]);
             saveTaskToDatabase(newTask)
         }
-        setHours(0)
-        setMinutes(0)
+        setTime({hours: 0, minutes: 0, seconds: 0})
         setReps(2)
         setName("")
     }
 
     function addTime(){
-        if (minutes != 55){
-            setMinutes(minutes + 5)
+        if (time.minutes != 55){
+            setTime({...time, minutes: time.minutes + 5})
         } else{
-            setHours(hours + 1)
-            setMinutes(0)
+            setTime({...time, hours: time.hours + 1})
+            setTime({...time, minutes: 0})
         }
     }
 
     function removeTime(){
-        if (minutes != 0){
-            setMinutes(minutes - 5)
+        if (time.minutes != 0){
+            setTime({...time, minutes: time.minutes - 5})
         } else{
-            if (hours > 0){
-                setHours(hours - 1)
-                setMinutes(55)
+            if (time.hours > 0){
+                setTime({...time, hours: time.hours - 1})
+                setTime({...time, minutes: 55})
             }
         }
     }
@@ -142,8 +139,8 @@ export default function CreateArea(props){
                     display={timeDisplay}
                     add={addTime}
                     remove={removeTime}
-                    minutes={minutes}
-                    hours={hours}
+                    minutes={time.minutes}
+                    hours={time.hours}
                 />
                 :
                 <TaskOptions 
